@@ -6,7 +6,7 @@
 // Where leads are sent. Leave empty to test the flow (logs the lead to the
 // console and goes to the thank-you page). Works with a Google Apps Script
 // web app URL, Web3Forms, Formspree, or any CRM / Zapier / Make webhook.
-const FORM_ENDPOINT = "";
+const FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbwYnAfwqPfea57MW3LadpPw1Yg-5xLaTna93DhnYOvCp25B4wu8R7pwIYbnUkKYeakj/exec";
 // Extra fields some services need, e.g. { access_key: "..." } for Web3Forms.
 const FORM_EXTRA_FIELDS = {};
 const THANK_YOU_URL = "thank-you.html";
