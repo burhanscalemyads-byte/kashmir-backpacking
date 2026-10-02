@@ -109,9 +109,17 @@ cd ~/kashmir-backpacking && python3 -m http.server 8080
 
 ## 6. Hosting: kashmir.glabol.com
 
-The page is hosted on **Cloudflare Pages** and connected to a private GitHub repo. Every push to `main` goes live in about a minute.
+**Hostinger (upload a zip).** Build the upload package from the project folder:
 
-- **Preview first:** push to a `preview` branch. Cloudflare gives it its own URL to check before merging.
-- **Undo a bad change:** Cloudflare dashboard → Workers & Pages → the project → Deployments → "Rollback to this deployment".
-- **`_headers`:** security headers, and 1-day caching for images.
-- **`_redirects`:** hides `tools/` and this README on the live site.
+```bash
+cd ~/kashmir-backpacking && rm -f kashmir-live.zip && zip -q -r -X kashmir-live.zip index.html thank-you.html styles.css main.js .htaccess images -x "*.DS_Store"
+```
+
+1. In hPanel → File Manager, open the subdomain's folder.
+2. Upload `kashmir-live.zip` and extract it there. `index.html` must sit directly in that folder, not in a subfolder.
+3. Once hPanel shows SSL as active for the subdomain, turn on Force HTTPS.
+4. After any later change, rebuild the zip and upload again. Overwriting the old files is fine.
+
+`.htaccess` adds security headers and caches images for a day. Pages, styles and scripts are re-checked on every visit, so edits show up straight away.
+
+**Cloudflare Pages (connected to GitHub).** This is the alternative. Every push to `main` goes live in about a minute, and `_headers` and `_redirects` do the same job as `.htaccess`. A bad change can be undone under Deployments → "Rollback to this deployment".
