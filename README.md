@@ -1,12 +1,14 @@
 # Glabol Kashmir: landing page
 
-A static landing page for Google Ads lead capture. There's no build step: open `index.html` or upload the folder anywhere.
+A static landing page for Google and Meta ads lead capture. There's no build step: open `index.html` or upload the folder anywhere.
 
 ```
 index.html       the landing page
-thank-you.html   shown after a successful enquiry (put the Google Ads conversion tag here)
+thank-you.html   shown after an enquiry: 3 qualifying questions, then "your trip is on its way"
 styles.css       all styling; colours are the variables at the top
-main.js          form, ad attribution, keyword headlines, altitude chart
+site.js          settings (sheet URL, phone, Meta Pixel / Google Ads IDs), sending, ad tracking
+main.js          landing page: form, ad attribution, keyword headlines, altitude chart
+thank-you.js     the qualifying questions and the Hot / Warm / Cold rule
 images/          your photos
 ```
 
@@ -17,9 +19,9 @@ Everything below is a realistic placeholder. Search `index.html` and `thank-you.
 | Placeholder | Where |
 |---|---|
 | ~~Brand and logo~~ Done: Glabol logo in the header and footer | — |
-| `+91 98765 43210` / `919876543210` | header, footer, WhatsApp links, `SUPPORT_PHONE` in `main.js` |
+| `+91 98765 43210` / `919876543210` | header, footer, WhatsApp links, `SUPPORT_PHONE` in `site.js` |
 | `hello@example.com`, Srinagar address | footer |
-| ₹18,999 / ₹21,499 / ₹5,000 deposit, next departure date | hero facts bar, price section, JSON-LD in `<head>` |
+| ₹18,999 / ₹21,499 / ₹5,000 deposit, next departure date | hero facts bar, price section, JSON-LD in `<head>`, budget question in `thank-you.html` |
 | 4.8 rating, 1,240 reviews, 6,500+ travellers | hero rating line, proof strip, reviews |
 | Itinerary, inclusions, departures, seats left | the route, price and departures sections |
 | Reviews and mosaic quotes | use real ones from real travellers |
@@ -55,18 +57,40 @@ Aim for under 350 KB for `hero.jpg` and under 150 KB for the others.
 
 ## 3. Leads go to a Google Sheet
 
-Every enquiry becomes a row in the sheet, and the sheet owner gets an email alert with a WhatsApp link to the lead. The sheet columns are:
+Every enquiry becomes a row in the sheet straight away, and the sheet owner gets an email alert with a WhatsApp link to the lead. The thank-you page then asks 3 qualifying questions, and each answer is added to the same row. The sheet columns are:
 
-| Timestamp | Name | Phone | Travel month | Travellers | Source | Medium | Campaign ID | Adset ID | Ad ID | Keyword | GCLID | Landing page | Form |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Timestamp | Name | Phone | Travel month | Travellers | Lead quality | Budget fit | Booking timeline | Best time to call | Source | Medium | Campaign ID | Adset ID | Ad ID | Keyword | GCLID | Landing page | Form | Lead ID |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 
-- **Setup:** follow the 5 steps at the top of [`tools/google-sheet-leads.gs`](tools/google-sheet-leads.gs), then put the web app URL in `FORM_ENDPOINT` at the top of `main.js`.
-- **Your own columns:** add "Status" or "Notes" columns, or reorder them, anywhere in the sheet. Leads are matched to columns by header name.
-- **Junk filter:** the script only accepts a name plus a valid Indian mobile number. A hidden field also catches form-filling bots, which are dropped without counting as an Ads conversion.
-- **Email alerts:** a free Gmail account can send about 100 a day. Leads are still saved after that.
+- **Setup:** follow the 5 steps at the top of [`tools/google-sheet-leads.gs`](tools/google-sheet-leads.gs), then put the web app URL in `FORM_ENDPOINT` at the top of `site.js`.
+- **Updating the script:** paste the new version and click Save. Then go to Deploy → Manage deployments → pencil → Version: "New version" → Deploy. "New deployment" would give it a new URL. Columns added in an update appear on the right of an existing sheet, and you can drag them anywhere.
+- **Your own columns:** add "Status" or "Notes" columns, or reorder them, anywhere in the sheet. Leads are matched to columns by header name. Hide a column you don't need rather than deleting it, or it comes back.
+- **Junk filter:**
+  - The script only accepts a name plus a valid Indian mobile number.
+  - Answers are only accepted with the exact button values, and they never change the name or phone.
+  - A hidden field catches form-filling bots, which are dropped without counting as a conversion.
+- **Email alerts:** sent the moment the enquiry arrives, before the questions, so nobody waits for a call. A free Gmail account can send about 100 a day. Leads are still saved after that.
 - **CRM later:** set `CRM_WEBHOOK_URL` in the script and every lead is also forwarded there. The website doesn't need to change.
 
-While `FORM_ENDPOINT` is empty, submitting logs the lead to the browser console and still goes to the thank-you page, so you can test the flow. Other services also work in `FORM_ENDPOINT`, for example Formspree, or Web3Forms with `FORM_EXTRA_FIELDS = { access_key: "YOUR_KEY" }`.
+While `FORM_ENDPOINT` is empty, submitting logs the lead to the browser console and still goes to the thank-you page, so you can test the flow. Other services also work in `FORM_ENDPOINT`, for example Formspree, or Web3Forms with `FORM_EXTRA_FIELDS = { access_key: "YOUR_KEY" }`. Those services save the first form only, not the answers.
+
+**Qualifying questions (thank-you page).** One question per screen, tap to answer, with Back and "Skip, just call me". Skipping loses nothing, because the lead is already saved.
+
+1. **Budget fit:** "Yes, that fits" / "A bit high, but I'm open" / "I need something cheaper".
+2. **Booking timeline:** "This week" / "In the next 2–4 weeks" / "Just exploring for now".
+3. **Best time to call:** Morning / Afternoon / Evening / Anytime. The thank-you message then confirms the time they picked.
+
+**Lead quality** (`leadQuality()` in `thank-you.js`):
+
+| Lead quality | When |
+|---|---|
+| **Hot** | budget fits or "a bit high, but open", and booking this week or within 2–4 weeks. Call these first. |
+| **Warm** | budget OK, but just exploring. |
+| **Cold** | needs something cheaper. |
+| **Partial** | answered the budget question only. |
+| **Not answered** | skipped the questions or left the page. |
+
+To change a question or an answer, edit its button in `thank-you.html`. Then add the same `value` to the `ANSWERS` list in the Apps Script, or the sheet ignores it, and update `leadQuality()` if the rule should change.
 
 ## 4. Ad tracking
 
@@ -94,11 +118,32 @@ utm_source=facebook&utm_medium=paid_social&campaign_id={{campaign.id}}&adset_id=
 - **Values Google can't fill** are left blank. For example, Performance Max has no ad group or ad ID, and Demand Gen has no keyword.
 - **Credit for the ad click:** attribution is saved when the visitor lands, so the lead is credited to the ad click even if they browse around or reload first.
 
+**Meta Pixel** (`META_PIXEL_ID` in `site.js`, already set to `4126422144254829`). It sends:
+
+| Event | When |
+|---|---|
+| `PageView` | every page |
+| `Lead` | once per enquiry, when the thank-you page opens. The event ID is the lead ID, so a reload doesn't count twice. |
+| `QualifiedLead` (custom event) | once, when a lead becomes **Hot** |
+| `Contact` | every WhatsApp tap |
+
+On the thank-you page the pixel also gets the lead's phone number for matching. The pixel hashes it in the browser before sending it.
+
+**Making Meta optimise for quality:**
+1. In Events Manager, create a Custom conversion from the `QualifiedLead` event.
+2. Run ad sets on the Lead event until `QualifiedLead` reaches about 50 a week.
+3. Then switch the ad sets' conversion event to the custom conversion. Meta then looks for people like your Hot leads, not just anyone who fills a form.
+
+**Google Ads conversions.** In `site.js`, set `GOOGLE_ADS_ID` (`AW-…`). Then set `GOOGLE_ADS_LEAD_LABEL` and, optionally, `GOOGLE_ADS_QUALIFIED_LABEL`, which are the labels of a "Lead" and a "Qualified lead" conversion action. Both fire once per lead, with the lead ID as the transaction ID.
+
 **Other tracking:**
-- **Conversion:** uncomment the block in the `<head>` of `thank-you.html` and fill in your `AW-` ID and conversion label.
 - **Auto-tagging:** keep it on in Google Ads. The `GCLID` column lets you import offline conversions (leads that became bookings) later.
 - **Keyword-matched line:** the `kw={keyword}` part of the suffix also picks the hero's supporting line (solo, budget, group, Gulmarg/Sonamarg/Pahalgam). Raw search text is never shown. Edit the list in `matchHeadline()` in `main.js`.
-- **Google Tag Manager:** a `lead_submit` event is pushed to `dataLayer` on each enquiry, and a `whatsapp_click` event on each WhatsApp tap. Its `link_location` is one of `hero-form`, `faq`, `final-form` or `sticky-bar`. You can import it as a secondary conversion.
+- **Google Tag Manager:** these events are pushed to `dataLayer`:
+  - `lead_submit` on each enquiry;
+  - `qualified_lead` when a lead becomes Hot;
+  - `whatsapp_click` on each WhatsApp tap. Its `link_location` is one of `hero-form`, `faq`, `final-form`, `sticky-bar` or `thank-you`.
+- **Privacy line:** the footer says that Meta and Google ad tools measure the ads and may receive the phone number in hashed form. Keep it while the pixel is on.
 
 ## 5. Test and publish
 
@@ -112,7 +157,7 @@ cd ~/kashmir-backpacking && python3 -m http.server 8080
 **Hostinger (upload a zip).** Build the upload package from the project folder:
 
 ```bash
-cd ~/kashmir-backpacking && rm -f kashmir-live.zip && zip -q -r -X kashmir-live.zip index.html thank-you.html styles.css main.js .htaccess images -x "*.DS_Store"
+cd ~/kashmir-backpacking && rm -f kashmir-live.zip && zip -q -r -X kashmir-live.zip index.html thank-you.html styles.css site.js main.js thank-you.js .htaccess images -x "*.DS_Store"
 ```
 
 1. In hPanel → File Manager, open the subdomain's folder.

@@ -2,26 +2,7 @@
    Glabol Kashmir — landing page behaviour
    ========================================================= */
 
-// ---- Settings: edit these -------------------------------------------------
-// Where leads are sent. Leave empty to test the flow (logs the lead to the
-// console and goes to the thank-you page). Works with a Google Apps Script
-// web app URL, Web3Forms, Formspree, or any CRM / Zapier / Make webhook.
-const FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbwYnAfwqPfea57MW3LadpPw1Yg-5xLaTna93DhnYOvCp25B4wu8R7pwIYbnUkKYeakj/exec";
-// Extra fields some services need, e.g. { access_key: "..." } for Web3Forms.
-const FORM_EXTRA_FIELDS = {};
-const THANK_YOU_URL = "thank-you.html";
-const SUPPORT_PHONE = "+91 98765 43210";
-// ---------------------------------------------------------------------------
-
-const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-function store(key, value) {
-  try {
-    if (value === undefined) return sessionStorage.getItem(key);
-    sessionStorage.setItem(key, value);
-  } catch (e) { /* storage blocked: carry on without it */ }
-  return null;
-}
+// Settings (endpoint, phone, tracking IDs) and the shared helpers are in site.js.
 
 /* ---------- Ad attribution ----------
    Read when the visitor lands and kept for the visit, so a lead is credited to the ad
@@ -139,12 +120,6 @@ document.querySelectorAll(".dep-hold").forEach((a) => a.addEventListener("click"
   update();
 })();
 
-/* ---------- WhatsApp clicks (track as a secondary conversion in Ads / GTM) ---------- */
-document.querySelectorAll("[data-wa]").forEach((a) => a.addEventListener("click", () => {
-  window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({ event: "whatsapp_click", link_location: a.dataset.wa || a.className });
-}));
-
 /* ---------- Forms ---------- */
 function cleanPhone(raw) {
   let digits = raw.replace(/\D/g, "");
@@ -179,21 +154,10 @@ function validate(form) {
   return !firstBad;
 }
 
-async function sendLead(payload) {
-  if (!FORM_ENDPOINT) {
-    console.info("[Glabol] FORM_ENDPOINT is empty. Lead not sent:", payload);
-    return;
-  }
-  // URL-encoded: what Apps Script reads into e.parameter, and accepted by every form service
-  const body = new URLSearchParams({ ...FORM_EXTRA_FIELDS, ...payload });
-
-  // Apps Script web apps don't return CORS headers, so the response can't be read
-  if (FORM_ENDPOINT.includes("script.google.com")) {
-    await fetch(FORM_ENDPOINT, { method: "POST", body, mode: "no-cors" });
-    return;
-  }
-  const res = await fetch(FORM_ENDPOINT, { method: "POST", body, headers: { Accept: "application/json" } });
-  if (!res.ok) throw new Error("Lead endpoint returned " + res.status);
+// Random ID that ties the thank-you page's answers to this lead's row in the sheet
+function newLeadId() {
+  if (crypto.randomUUID) return crypto.randomUUID();
+  return Array.from(crypto.getRandomValues(new Uint8Array(16)), (b) => b.toString(16).padStart(2, "0")).join("");
 }
 
 document.querySelectorAll(".lead-form").forEach((form) => {
@@ -219,6 +183,7 @@ document.querySelectorAll(".lead-form").forEach((form) => {
     status.textContent = "";
 
     const payload = {
+      lead_id: newLeadId(),
       name: form.elements.name.value.trim(),
       phone: "+91" + cleanPhone(form.elements.phone.value),
       month: form.elements.month.value,
@@ -228,8 +193,8 @@ document.querySelectorAll(".lead-form").forEach((form) => {
     };
 
     try {
-      await sendLead(payload);
-      store("bk_lead_name", payload.name.split(" ")[0]);
+      await postToSheet(payload);
+      saveLead({ id: payload.lead_id, firstName: payload.name.split(" ")[0], phoneDigits: payload.phone.slice(3) });
       window.dataLayer = window.dataLayer || [];
       window.dataLayer.push({ event: "lead_submit", form_location: payload.form_location });
       location.href = THANK_YOU_URL;

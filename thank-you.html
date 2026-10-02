@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en-IN">
+<html lang="en-IN" data-page="thank-you">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,22 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;800&family=Inter:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="styles.css">
-
-  <!--
-    GOOGLE ADS CONVERSION: uncomment and replace AW-XXXXXXXXX and the label.
-    This page only loads after a successful enquiry, so each load counts as one lead.
-
-  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-XXXXXXXXX"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'AW-XXXXXXXXX');
-    gtag('config', 'G-XXXXXXXXXX');   // GA4, optional
-    gtag('event', 'conversion', {'send_to': 'AW-XXXXXXXXX/CONVERSION_LABEL'});
-  </script>
-  -->
-
+  <!-- Meta Pixel and Google Ads conversions are set up in site.js -->
   <style>
     .thanks {
       min-height: calc(100svh - 2 * var(--frame));
@@ -33,8 +18,8 @@
       gap: 0;
     }
     .thanks-logo { margin-bottom: 40px; }
-    .thanks h1 { font-size: clamp(40px, 6vw, 80px); line-height: 1; letter-spacing: -0.035em; max-width: 12em; margin-bottom: 20px; text-wrap: balance; }
-    .thanks > p { max-width: 46ch; font-size: 18px; margin-bottom: 40px; }
+    .thanks-done h1 { font-size: clamp(40px, 6vw, 80px); line-height: 1; letter-spacing: -0.035em; max-width: 12em; margin-bottom: 20px; text-wrap: balance; outline: none; }
+    .thanks-done > p { max-width: 46ch; font-size: 18px; margin-bottom: 40px; }
     .next { list-style: none; margin: 0 0 40px; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; counter-reset: step; }
     .next li { background: var(--mist-soft); border-radius: 20px; padding: 22px; counter-increment: step; font-size: 16px; }
     .next li::before { content: "Step " counter(step); display: block; font: 600 13px/1 var(--body); color: var(--forest); margin-bottom: 10px; }
@@ -43,32 +28,125 @@
     .thanks-actions .back { color: var(--forest); font-weight: 500; }
     .thanks .btn-arrow { background: var(--forest); }
     .thanks .btn-arrow svg { stroke: var(--lime); }
-    @media (max-width: 760px) { .next { grid-template-columns: 1fr; } }
+
+    /* Qualifying questions */
+    /* questions on the left, a group photo on the right (desktop only) */
+    .qualify { display: grid; grid-template-columns: minmax(0, 780px) minmax(0, 1fr); gap: 64px; align-items: center; }
+    .qualify[hidden] { display: none; }
+    .qualify-photo { margin: 0; align-self: stretch; }
+    .qualify-photo img { display: block; width: 100%; height: 100%; max-height: 600px; object-fit: cover; border-radius: 28px; }
+    .qualify-received {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin: 0 0 22px; padding: 8px 14px 8px 10px;
+      border-radius: 999px; background: var(--lime);
+      font: 600 14px/1 var(--body); color: var(--forest);
+    }
+    .qualify-received svg { width: 18px; height: 18px; fill: none; stroke: var(--forest); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+    .qualify h1 { font-size: clamp(30px, 4.2vw, 50px); line-height: 1.05; letter-spacing: -0.03em; max-width: 15em; margin-bottom: 30px; text-wrap: balance; }
+    .qualify-progress { display: flex; align-items: center; gap: 14px; margin-bottom: 26px; }
+    .qualify-bar { flex: 1 1 auto; max-width: 220px; height: 6px; border-radius: 999px; background: var(--mist-soft); overflow: hidden; }
+    .qualify-bar span { display: block; width: 0; height: 100%; border-radius: inherit; background: var(--forest); transition: width .3s ease; }
+    .qualify-count { margin: 0; font-size: 14px; font-weight: 500; color: var(--moss); white-space: nowrap; }
+    .qualify-step h2 { font-size: clamp(21px, 2.4vw, 27px); line-height: 1.25; letter-spacing: -0.02em; max-width: 30em; margin-bottom: 18px; outline: none; }
+    .qualify-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .qualify-options:has(> :nth-child(4)) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .qualify-options button {
+      appearance: none; cursor: pointer; text-align: left;
+      min-height: 68px; padding: 18px 20px;
+      border: 1.5px solid var(--line); border-radius: 18px; background: #fff;
+      font: 600 17px/1.3 var(--body); color: var(--forest);
+      transition: border-color .15s, background-color .15s, transform .1s;
+    }
+    .qualify-options button:hover { border-color: var(--forest); }
+    .qualify-options button:active { transform: scale(.98); }
+    .qualify-options button:focus-visible { outline: 3px solid var(--forest); outline-offset: 2px; }
+    .qualify-options button[aria-pressed="true"] { background: var(--lime); border-color: var(--lime); }
+    .qualify-nav { display: flex; justify-content: space-between; gap: 16px; margin-top: 22px; }
+    .qualify-nav button { appearance: none; border: 0; background: none; padding: 8px 0; cursor: pointer; font: 500 15px var(--body); color: var(--moss); text-decoration: underline; text-underline-offset: 3px; }
+    .qualify-nav button:hover { color: var(--forest); }
+    .qualify-nav .qualify-skip { margin-left: auto; }
+    @media (prefers-reduced-motion: reduce) { .qualify-bar span, .qualify-options button { transition: none; } }
+    @media (max-width: 1000px) {
+      .qualify { grid-template-columns: 1fr; }
+      .qualify-photo { display: none; }
+    }
+    @media (max-width: 760px) {
+      .next { grid-template-columns: 1fr; }
+      .qualify-options, .qualify-options:has(> :nth-child(4)) { grid-template-columns: 1fr; }
+      .qualify-options button { min-height: 60px; }
+    }
   </style>
 </head>
 <body>
   <main class="panel thanks">
     <a href="index.html" class="footer-logo thanks-logo" aria-label="Glabol, back to the trip"></a>
-    <h1 id="thanks-title">Your Kashmir trip is on its way.</h1>
-    <p>A trip captain will call you within 2 hours, between 9am and 9pm. Keep your phone close. The call comes from +91 98765 43210.</p>
-    <ol class="next">
-      <li><strong>We call you</strong>A 10-minute chat about your dates, who's coming and any questions.</li>
-      <li><strong>You get the plan</strong>The full day-by-day itinerary and packing list on WhatsApp.</li>
-      <li><strong>Hold your seat</strong>Pay ₹5,000 to lock your spot. The rest is due 21 days before you fly.</li>
-    </ol>
-    <div class="thanks-actions">
-      <a class="btn" href="https://wa.me/919876543210?text=Hi%2C%20I%20just%20sent%20an%20enquiry%20for%20the%20Kashmir%20backpacking%20trip.">
-        <span class="btn-label">Can't wait? WhatsApp us</span>
-        <span class="btn-arrow" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 6 L14 14 M14 7 V14 H7"/></svg></span>
-      </a>
-      <a class="back" href="index.html">Back to the trip</a>
-    </div>
+
+    <!-- Shown right after an enquiry: 3 quick questions, saved to the same row in the sheet -->
+    <section class="qualify" id="qualify" aria-labelledby="qualify-title" hidden>
+      <div class="qualify-main">
+      <p class="qualify-received"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg>Enquiry received</p>
+      <h1 id="qualify-title">3 quick questions so your trip captain can plan your call.</h1>
+      <div class="qualify-progress">
+        <div class="qualify-bar" aria-hidden="true"><span></span></div>
+        <p class="qualify-count" aria-live="polite"></p>
+      </div>
+
+      <div class="qualify-step" data-key="budget_fit" role="group" aria-labelledby="q-budget" hidden>
+        <h2 id="q-budget" tabindex="-1">The trip is ₹18,999 per person, plus your travel to Srinagar. Does that fit your budget?</h2>
+        <div class="qualify-options">
+          <button type="button" value="Fits">Yes, that fits</button>
+          <button type="button" value="A bit high, but open">A bit high, but I'm open</button>
+          <button type="button" value="Too high">I need something cheaper</button>
+        </div>
+      </div>
+
+      <div class="qualify-step" data-key="booking_timeline" role="group" aria-labelledby="q-timeline" hidden>
+        <h2 id="q-timeline" tabindex="-1">When are you planning to book?</h2>
+        <div class="qualify-options">
+          <button type="button" value="This week">This week</button>
+          <button type="button" value="In 2-4 weeks">In the next 2–4 weeks</button>
+          <button type="button" value="Just exploring">Just exploring for now</button>
+        </div>
+      </div>
+
+      <div class="qualify-step" data-key="call_time" role="group" aria-labelledby="q-call" hidden>
+        <h2 id="q-call" tabindex="-1">When should your trip captain call you?</h2>
+        <div class="qualify-options">
+          <button type="button" value="Morning">Morning, 9am–12pm</button>
+          <button type="button" value="Afternoon">Afternoon, 12–5pm</button>
+          <button type="button" value="Evening">Evening, 5–9pm</button>
+          <button type="button" value="Anytime">Anytime</button>
+        </div>
+      </div>
+
+      <div class="qualify-nav">
+        <button type="button" class="qualify-back" hidden>&larr; Back</button>
+        <button type="button" class="qualify-skip">Skip, just call me</button>
+      </div>
+      </div>
+      <figure class="qualify-photo" aria-hidden="true">
+        <img src="images/final.jpg" alt="" width="960" height="922" loading="lazy" decoding="async">
+      </figure>
+    </section>
+
+    <section class="thanks-done" id="thanks-done">
+      <h1 id="thanks-title">Your Kashmir trip is on its way.</h1>
+      <p id="thanks-call">A trip captain will call you within 2 hours, between 9am and 9pm. Keep your phone close. The call comes from +91 98765 43210.</p>
+      <ol class="next">
+        <li><strong>We call you</strong>A 10-minute chat about your dates, who's coming and any questions.</li>
+        <li><strong>You get the plan</strong>The full day-by-day itinerary and packing list on WhatsApp.</li>
+        <li><strong>Hold your seat</strong>Pay ₹5,000 to lock your spot. The rest is due 21 days before you fly.</li>
+      </ol>
+      <div class="thanks-actions">
+        <a class="btn" data-wa="thank-you" href="https://wa.me/919876543210?text=Hi%2C%20I%20just%20sent%20an%20enquiry%20for%20the%20Kashmir%20backpacking%20trip.">
+          <span class="btn-label">Can't wait? WhatsApp us</span>
+          <span class="btn-arrow" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 6 L14 14 M14 7 V14 H7"/></svg></span>
+        </a>
+        <a class="back" href="index.html">Back to the trip</a>
+      </div>
+    </section>
   </main>
-  <script>
-    try {
-      var n = sessionStorage.getItem("bk_lead_name");
-      if (n) document.getElementById("thanks-title").textContent = "Thanks, " + n + ". Your Kashmir trip is on its way.";
-    } catch (e) {}
-  </script>
+  <script src="site.js" defer></script>
+  <script src="thank-you.js" defer></script>
 </body>
 </html>
