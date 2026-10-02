@@ -289,7 +289,6 @@ a { color: inherit; }
 .form-status { font-size: 14px; color: var(--chinar); }
 .form-status:empty { display: none; }
 .form-privacy { font-size: 12.5px; line-height: 1.45; }
-.hp-field { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
 .form-wa {
   display: flex; align-items: center; justify-content: center; gap: 8px;
   padding: 4px 0 2px;

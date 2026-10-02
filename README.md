@@ -68,7 +68,6 @@ Every enquiry becomes a row in the sheet straight away, and the sheet owner gets
 - **Junk filter:**
   - The script only accepts a name plus a valid Indian mobile number.
   - Answers are only accepted with the exact button values, and they never change the name or phone.
-  - A hidden field catches form-filling bots, which are dropped without counting as a conversion.
 - **Email alerts:** sent the moment the enquiry arrives, before the questions, so nobody waits for a call. A free Gmail account can send about 100 a day. Leads are still saved after that.
 - **CRM later:** set `CRM_WEBHOOK_URL` in the script and every lead is also forwarded there. The website doesn't need to change.
 
@@ -157,13 +156,15 @@ cd ~/kashmir-backpacking && python3 -m http.server 8080
 **Hostinger (upload a zip).** Build the upload package from the project folder:
 
 ```bash
-cd ~/kashmir-backpacking && rm -f kashmir-live.zip && zip -q -r -X kashmir-live.zip index.html thank-you.html styles.css site.js main.js thank-you.js .htaccess images -x "*.DS_Store"
+cd ~/kashmir-backpacking && python3 tools/build-zip.py
 ```
 
+The script stamps every CSS/JS link in the pages with a version tag (`styles.css?v=…`) and then makes `kashmir-live.zip`. Always build with it, so that after an upload every visitor's browser loads the new CSS/JS. Without the tags, a browser that still holds old cached files mixes them with the new page and the form stops working.
+
 1. In hPanel → File Manager, open the subdomain's folder.
-2. Upload `kashmir-live.zip` and extract it there. `index.html` must sit directly in that folder, not in a subfolder.
+2. Upload `kashmir-live.zip` and extract it there. If asked, choose to replace the existing files. `index.html` must sit directly in that folder, not in a subfolder.
 3. Once hPanel shows SSL as active for the subdomain, turn on Force HTTPS.
-4. After any later change, rebuild the zip and upload again. Overwriting the old files is fine.
+4. After any later change, rebuild the zip with the script and upload it again.
 
 `.htaccess` adds security headers and caches images for a day. Pages, styles and scripts are re-checked on every visit, so edits show up straight away.
 

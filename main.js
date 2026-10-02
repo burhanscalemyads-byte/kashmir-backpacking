@@ -173,8 +173,6 @@ document.querySelectorAll(".lead-form").forEach((form) => {
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    // Hidden field only bots fill in: drop the submission without sending or converting
-    if (form.elements.website_url && form.elements.website_url.value) return;
     if (sending || !validate(form)) return;
 
     sending = true;
