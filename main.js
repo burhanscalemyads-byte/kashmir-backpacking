@@ -93,6 +93,12 @@ document.querySelectorAll(".dep-hold").forEach((a) => a.addEventListener("click"
   goToForm(e);
 }));
 
+/* ---------- WhatsApp clicks (track as a secondary conversion in Ads / GTM) ---------- */
+document.querySelectorAll("[data-wa]").forEach((a) => a.addEventListener("click", () => {
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ event: "whatsapp_click", link_location: a.className });
+}));
+
 /* ---------- Forms ---------- */
 function cleanPhone(raw) {
   let digits = raw.replace(/\D/g, "");

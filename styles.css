@@ -126,6 +126,9 @@ a { color: inherit; }
 }
 .ridge, .hero-photo, .hero-clouds, .hero-fg, .hero-shade { position: absolute; inset: 0; width: 100%; height: 100%; }
 .hero-photo { object-fit: cover; object-position: center 40%; }
+/* Mirrored: the tall peak goes to the right (behind the form) and the left stays
+   open sky, so the whole word KASHMIR is readable */
+.hero-photo, .hero-fg, .hero-clouds { transform: scaleX(-1); }
 /* Same photo and the same cover/position maths as .hero-photo, cut to below the skyline */
 .hero-fg {
   background: url("images/hero.jpg") center 40% / cover no-repeat;
@@ -135,7 +138,7 @@ a { color: inherit; }
 /* Clouds drift softly in front of the wordmark */
 .hero-clouds {
   z-index: 3;
-  opacity: .5;
+  opacity: .35;
   background: url("images/hero.jpg") center 40% / cover no-repeat;
   -webkit-mask: url("images/hero-clouds.png") center 40% / cover no-repeat;
   mask: url("images/hero-clouds.png") center 40% / cover no-repeat;
@@ -156,12 +159,15 @@ a { color: inherit; }
 /* No photo yet: drawn ridges stand in, with the wordmark between them */
 .hero.no-photo .ridge-front { display: block; }
 
+/* The wordmark IS the "Kashmir" of the headline on desktop: sized to the left
+   column (viewport minus frame, padding, form card and gap) so the form never covers it */
+.hero { --wm: clamp(96px, calc((100vw - 2 * var(--frame) - 96px - 448px) / 4.3), 250px); }
 .wordmark {
-  position: absolute; left: 0; right: 0;
-  top: clamp(64px, 9%, 110px);
+  position: absolute; left: 44px; right: auto;
+  top: 100px;
   margin: 0;
-  text-align: center;
-  font: 800 clamp(72px, 19.5vw, 300px)/.8 var(--display);
+  text-align: left;
+  font: 800 var(--wm)/.8 var(--display);
   letter-spacing: -0.04em;
   color: rgba(255, 255, 255, .92);
   text-shadow: 0 6px 30px rgba(16, 48, 84, .28);
@@ -175,7 +181,8 @@ a { color: inherit; }
   margin: 20px 24px 0;
   padding: 8px 8px 8px 22px;
   border-radius: 999px;
-  background: var(--glass);
+  /* darker glass than the default so the logo and phone number stay readable over bright cloud */
+  background: rgba(14, 32, 24, .22);
   border: 1px solid var(--glass-line);
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
@@ -207,15 +214,23 @@ a { color: inherit; }
 }
 .form-card { justify-self: end; width: 100%; }
 
-.hero-copy { padding-bottom: 10px; }
+/* Starts right under the wordmark so "KASHMIR / Backpacking Trip" reads as one headline.
+   Header (~82px) + grid padding (40px) = 122px; wordmark ends at 100px + 0.8em. */
+.hero-copy { align-self: start; margin-top: calc(100px + 0.8 * var(--wm) + 14px - 122px); }
 .hero-title {
   color: var(--snow);
-  font-size: clamp(48px, 6.2vw, 104px);
+  font-size: clamp(44px, 5.2vw, 84px);
   line-height: .95;
   letter-spacing: -0.04em;
   max-width: 8em;
   text-wrap: balance;
   margin-bottom: 22px;
+}
+/* Desktop: "Kashmir" is shown by the wordmark, so hide it visually (still read
+   by search engines and screen readers). Phones show it, see the 760px query. */
+.h1-kashmir {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
 }
 .hero-sub { max-width: 36ch; font-size: 19px; line-height: 1.5; color: rgba(255, 255, 255, .92); margin-bottom: 28px; }
 
@@ -278,6 +293,14 @@ a { color: inherit; }
 .form-status { font-size: 14px; color: var(--chinar); }
 .form-status:empty { display: none; }
 .form-privacy { font-size: 12.5px; line-height: 1.45; }
+.form-wa {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 4px 0 2px;
+  font: 500 14px/1.3 var(--body);
+  color: #18794A;
+  text-decoration: none;
+}
+.form-wa:hover { text-decoration: underline; }
 
 .avatars { display: flex; }
 .avatars .ph {
@@ -576,7 +599,9 @@ a { color: inherit; }
     gap: 28px;
     padding: 48px 16px 16px;
   }
+  .hero-copy { margin-top: 0; }
   .hero-title { font-size: clamp(44px, 13vw, 60px); margin-bottom: 14px; }
+  .h1-kashmir { position: static; width: auto; height: auto; overflow: visible; clip: auto; clip-path: none; white-space: normal; }
   .hero-sub { font-size: 17px; margin-bottom: 18px; }
   .price-grid { grid-template-columns: 1fr; }
   .price-box { display: block; }
