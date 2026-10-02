@@ -1,0 +1,3 @@
+# Keep the helper files private on the live site
+/tools/*    /    302
+/README.md  /    302
