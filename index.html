@@ -67,8 +67,8 @@
         <img src="images/logo-glabol.png" alt="Glabol" width="640" height="153">
       </a>
       <div class="topbar-actions">
-        <a class="topbar-call" href="tel:+919876543210">+91 98765 43210</a>
-        <a class="btn btn-sm" href="#enquire" data-focus-form>
+        <a class="topbar-call" href="tel:+919876543210"><span class="topbar-call-ico"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path fill="currentColor" d="M6.62 10.79a15.1 15.1 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24c1.12.37 2.33.57 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02l-2.2 2.2Z"/></svg></span>+91 98765 43210</a>
+        <a class="btn btn-sm topbar-enquire" href="#enquire" data-focus-form>
           <span class="btn-label">Enquire</span>
           <span class="btn-arrow" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 6 L14 14 M14 7 V14 H7"/></svg></span>
         </a>
@@ -134,9 +134,9 @@
               <span class="btn-label">Send my enquiry</span>
               <span class="btn-arrow" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 6 L14 14 M14 7 V14 H7"/></svg></span>
             </button>
-            <a class="form-wa" href="https://wa.me/919876543210?text=Hi%2C%20I%27m%20interested%20in%20the%20Kashmir%20backpacking%20trip." data-wa>
+            <a class="form-wa" href="https://wa.me/919876543210?text=Hi%2C%20I%27m%20interested%20in%20the%20Kashmir%20backpacking%20trip." data-wa="hero-form">
               <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.4-.3Z"/></svg>
-              Prefer WhatsApp? Chat with a trip captain
+              Prefer WhatsApp? Chat with us
             </a>
             <p class="form-status" role="status"></p>
             <p class="form-privacy">We only use your number to plan this trip with you. No spam, ever. <a href="#privacy">Privacy</a></p>
@@ -168,6 +168,7 @@
         <svg class="profile" id="profile" viewBox="0 0 1000 340" role="img" aria-label="Altitude profile: Srinagar 1,585 m, Gulmarg 2,650 m, Apharwat 3,980 m, Sonamarg 2,800 m, Pahalgam 2,740 m, Aru 2,414 m, Srinagar 1,585 m"
           data-stops='[["Srinagar",1585],["Gulmarg",2650],["Apharwat",3980],["Sonamarg",2800],["Pahalgam",2740],["Aru",2414],["Srinagar",1585]]'></svg>
       </div>
+      <p class="profile-hint" aria-hidden="true">Swipe to see the whole week &rarr;</p>
       <ol class="days">
         <li class="day">
           <div class="ph" data-label="day-1-srinagar.jpg"><img src="images/day-1-srinagar.jpg" alt="Shikara on Dal Lake at sunset" width="800" height="600" loading="lazy" decoding="async" onerror="this.remove()"></div>
@@ -210,6 +211,14 @@
           <p class="day-num">Day 7 <span>1,585 m</span></p>
           <h3>Back to Srinagar</h3>
           <p>Mughal gardens, old-city bakeries and a walk through Jamia Masjid. Airport drop by 3pm, phone full of new numbers.</p>
+        </li>
+        <li class="day-cta">
+          <h3>Get this plan on WhatsApp</h3>
+          <p>The full day-by-day itinerary, packing list and next dates, sent to your phone.</p>
+          <a class="btn btn-sm" href="#enquire" data-focus-form>
+            <span class="btn-label">Send it to me</span>
+            <span class="btn-arrow" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 6 L14 14 M14 7 V14 H7"/></svg></span>
+          </a>
         </li>
       </ol>
     </section>
@@ -312,6 +321,7 @@
       <div class="section-head">
         <h2 id="faq-title">Questions people ask before booking.</h2>
       </div>
+      <div class="faq-grid">
       <div class="faq-list">
         <details>
           <summary>Is Kashmir safe to travel right now?</summary>
@@ -337,6 +347,16 @@
           <summary>What if I need to cancel?</summary>
           <p>Cancel 30 or more days before departure for a full refund minus ₹1,000. Between 15 and 29 days you get 50% back, or move your booking to any other date for free.</p>
         </details>
+      </div>
+      <aside class="faq-help" aria-labelledby="faq-help-title">
+        <h3 id="faq-help-title">Still have a question?</h3>
+        <p>Ask a trip captain on WhatsApp, any day between 9am and 9pm. No question is too small.</p>
+        <a class="btn btn-sm" href="https://wa.me/919876543210?text=Hi%2C%20I%27m%20interested%20in%20the%20Kashmir%20backpacking%20trip." data-wa="faq">
+          <span class="btn-label">Chat on WhatsApp</span>
+          <span class="btn-arrow" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 6 L14 14 M14 7 V14 H7"/></svg></span>
+        </a>
+        <a class="faq-help-call" href="tel:+919876543210">or call +91 98765 43210</a>
+      </aside>
       </div>
     </section>
 
@@ -384,6 +404,10 @@
                 <span class="btn-label">Send my enquiry</span>
                 <span class="btn-arrow" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 6 L14 14 M14 7 V14 H7"/></svg></span>
               </button>
+              <a class="form-wa" href="https://wa.me/919876543210?text=Hi%2C%20I%27m%20interested%20in%20the%20Kashmir%20backpacking%20trip." data-wa="final-form">
+                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.4-.3Z"/></svg>
+                Prefer WhatsApp? Chat with us
+              </a>
               <p class="form-status" role="status"></p>
               <p class="form-privacy">We only use your number to plan this trip with you. No spam, ever. <a href="#privacy">Privacy</a></p>
             </form>
@@ -415,7 +439,7 @@
       <span class="btn-label">Enquire now</span>
       <span class="btn-arrow" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 6 L14 14 M14 7 V14 H7"/></svg></span>
     </a>
-    <a class="sticky-wa" data-wa href="https://wa.me/919876543210?text=Hi%2C%20I%27m%20interested%20in%20the%20Kashmir%20backpacking%20trip." aria-label="Chat on WhatsApp">
+    <a class="sticky-wa" data-wa="sticky-bar" href="https://wa.me/919876543210?text=Hi%2C%20I%27m%20interested%20in%20the%20Kashmir%20backpacking%20trip." aria-label="Chat on WhatsApp">
       <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.4-.3Z"/></svg>
     </a>
   </div>

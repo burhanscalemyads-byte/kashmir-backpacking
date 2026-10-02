@@ -19,8 +19,8 @@ Everything below is a realistic placeholder. Search `index.html` and `thank-you.
 | ~~Brand and logo~~ Done: Glabol logo in the header and footer | — |
 | `+91 98765 43210` / `919876543210` | header, footer, WhatsApp links, `SUPPORT_PHONE` in `main.js` |
 | `hello@example.com`, Srinagar address | footer |
-| ₹18,999 / ₹21,499 / ₹5,000 deposit | hero, price section, JSON-LD in `<head>` |
-| 4.8 rating, 1,240 reviews, 6,500+ travellers | rating chip, proof strip, reviews |
+| ₹18,999 / ₹21,499 / ₹5,000 deposit, next departure date | hero facts bar, price section, JSON-LD in `<head>` |
+| 4.8 rating, 1,240 reviews, 6,500+ travellers | hero rating line, proof strip, reviews |
 | Itinerary, inclusions, departures, seats left | the route, price and departures sections |
 | Reviews and mosaic quotes | use real ones from real travellers |
 | FAQ answers, especially cancellation terms | FAQ section |
@@ -29,13 +29,13 @@ Ads policy: the ratings, review counts and seat counts must be true before you r
 
 ## 2. Photos
 
-All photos are in place. Your own traveller photos are used for the form card, rating chip, photo grid and final section. Free-licensed Wikimedia Commons photos are used for the destinations. If an image is missing, its slot shows a green block labelled with the filename.
+All photos are in place. Your own traveller photos are used for the form card, the hero rating line, the photo grid and the final section. Free-licensed Wikimedia Commons photos are used for the destinations. If an image is missing, its slot shows a green block labelled with the filename.
 
 | File | Source | Used for |
 |---|---|---|
 | `hero.jpg` | Wikimedia Commons (Sonamarg) | Hero background |
 | `hero-card.jpg` | Your group by the river | Top of the enquiry card |
-| `avatar-1.jpg` … `avatar-3.jpg` | Faces cropped from the same group photo | Rating chip |
+| `avatar-1.jpg` … `avatar-3.jpg` | Faces cropped from the same group photo | Hero rating line |
 | `day-1-srinagar.jpg` … `day-7-srinagar.jpg` | Wikimedia Commons | Itinerary days |
 | `mood-1.jpg` … `mood-6.jpg` | Your traveller photos | "Different camera roll" grid |
 | `final.jpg` | Your snow group photo | Final section background |
@@ -72,7 +72,7 @@ While `FORM_ENDPOINT` is empty, submitting logs the lead to the browser console 
 - **Conversion:** uncomment the block in the `<head>` of `thank-you.html` and fill in your `AW-` ID and conversion label.
 - **Auto-tagging:** keep it on in Google Ads. The page stores `gclid` with every lead, so you can import offline conversions (leads that became bookings) later.
 - **Keyword-matched headline:** add `{keyword}` to your final URL suffix, e.g. `kw={keyword}`. The headline stays "Kashmir Backpacking Trip"; the line under it switches to one of a few pre-written versions (solo, budget, group, Gulmarg/Sonamarg/Pahalgam). Raw search text is never shown. Edit the list in `matchHeadline()` in `main.js`.
-- **Google Tag Manager:** a `lead_submit` event is pushed to `dataLayer` on each successful enquiry.
+- **Google Tag Manager:** a `lead_submit` event is pushed to `dataLayer` on each successful enquiry, and a `whatsapp_click` event on each WhatsApp tap. Its `link_location` says which button was tapped: `hero-form`, `faq`, `final-form` or `sticky-bar`. You can import it as a secondary conversion.
 
 ## 5. Test and publish
 

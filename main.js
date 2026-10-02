@@ -93,10 +93,20 @@ document.querySelectorAll(".dep-hold").forEach((a) => a.addEventListener("click"
   goToForm(e);
 }));
 
+/* ---------- Route chart on phones: fade the cut-off edge until it's scrolled to the end ---------- */
+(function chartScrollHint() {
+  const box = document.querySelector(".profile-scroll");
+  if (!box) return;
+  const update = () => box.classList.toggle("at-end", box.scrollLeft + box.clientWidth >= box.scrollWidth - 4);
+  box.addEventListener("scroll", update, { passive: true });
+  window.addEventListener("resize", update);
+  update();
+})();
+
 /* ---------- WhatsApp clicks (track as a secondary conversion in Ads / GTM) ---------- */
 document.querySelectorAll("[data-wa]").forEach((a) => a.addEventListener("click", () => {
   window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({ event: "whatsapp_click", link_location: a.className });
+  window.dataLayer.push({ event: "whatsapp_click", link_location: a.dataset.wa || a.className });
 }));
 
 /* ---------- Forms ---------- */
