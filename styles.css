@@ -115,7 +115,6 @@ a { color: inherit; }
   margin: var(--frame);
   border-radius: var(--radius);
   overflow: hidden;
-  min-height: clamp(760px, calc(100svh - 2 * var(--frame)), 980px);
   display: flex; flex-direction: column;
   color: var(--snow);
 }
@@ -125,23 +124,23 @@ a { color: inherit; }
   background: linear-gradient(180deg, #5E8BB0 0%, #8DB2CE 38%, #D3E1E8 70%);
 }
 .ridge, .hero-photo, .hero-clouds, .hero-fg, .hero-shade { position: absolute; inset: 0; width: 100%; height: 100%; }
-.hero-photo { object-fit: cover; object-position: center 40%; }
+.hero-photo { object-fit: cover; object-position: center 15%; }
 /* Mirrored: the tall peak goes to the right (behind the form) and the left stays
    open sky, so the whole word KASHMIR is readable */
 .hero-photo, .hero-fg, .hero-clouds { transform: scaleX(-1); }
 /* Same photo and the same cover/position maths as .hero-photo, cut to below the skyline */
 .hero-fg {
-  background: url("images/hero.jpg") center 40% / cover no-repeat;
-  -webkit-mask: url("images/hero-mask.svg") center 40% / cover no-repeat;
-  mask: url("images/hero-mask.svg") center 40% / cover no-repeat;
+  background: url("images/hero.jpg") center 15% / cover no-repeat;
+  -webkit-mask: url("images/hero-mask.svg") center 15% / cover no-repeat;
+  mask: url("images/hero-mask.svg") center 15% / cover no-repeat;
 }
 /* Clouds drift softly in front of the wordmark */
 .hero-clouds {
   z-index: 3;
   opacity: .35;
-  background: url("images/hero.jpg") center 40% / cover no-repeat;
-  -webkit-mask: url("images/hero-clouds.png") center 40% / cover no-repeat;
-  mask: url("images/hero-clouds.png") center 40% / cover no-repeat;
+  background: url("images/hero.jpg") center 15% / cover no-repeat;
+  -webkit-mask: url("images/hero-clouds.png") center 15% / cover no-repeat;
+  mask: url("images/hero-clouds.png") center 15% / cover no-repeat;
 }
 .hero.no-photo .hero-fg, .hero.no-photo .hero-clouds { display: none; }
 .ridge-back  { z-index: 0; }
@@ -208,15 +207,34 @@ a { color: inherit; }
   flex: 1;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(340px, 400px);
-  align-items: end;
+  align-items: stretch;
   gap: 48px;
   padding: 40px 48px 44px;
 }
-.form-card { justify-self: end; width: 100%; }
+.form-card { justify-self: end; align-self: start; width: 100%; }
 
 /* Starts right under the wordmark so "KASHMIR / Backpacking Trip" reads as one headline.
    Header (~82px) + grid padding (40px) = 122px; wordmark ends at 100px + 0.8em. */
-.hero-copy { align-self: start; margin-top: calc(100px + 0.8 * var(--wm) + 14px - 122px); }
+.hero-copy {
+  margin-top: calc(100px + 0.8 * var(--wm) + 14px - 122px);
+  display: flex; flex-direction: column; justify-content: space-between; gap: 36px;
+}
+
+/* Trip facts: lines up with the bottom of the form so the left column ends with it */
+.hero-facts {
+  display: grid; grid-template-columns: repeat(3, auto); justify-content: start;
+  margin: 0; padding: 16px 8px;
+  width: fit-content;
+  border-radius: 22px;
+  background: rgba(14, 32, 24, .28);
+  border: 1px solid var(--glass-line);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+.hero-facts div { padding: 0 24px; }
+.hero-facts div + div { border-left: 1px solid rgba(255, 255, 255, .25); }
+.hero-facts dt { font: 600 26px/1.1 var(--display); letter-spacing: -0.02em; color: var(--snow); }
+.hero-facts dd { margin: 4px 0 0; font-size: 14px; color: rgba(255, 255, 255, .82); }
 .hero-title {
   color: var(--snow);
   font-size: clamp(44px, 5.2vw, 84px);
@@ -599,7 +617,11 @@ a { color: inherit; }
     gap: 28px;
     padding: 48px 16px 16px;
   }
-  .hero-copy { margin-top: 0; }
+  .hero-copy { margin-top: 0; gap: 22px; }
+  .hero-facts { width: 100%; grid-template-columns: repeat(3, 1fr); padding: 12px 0; }
+  .hero-facts div { padding: 0 12px; }
+  .hero-facts dt { font-size: 19px; }
+  .hero-facts dd { font-size: 12.5px; }
   .hero-title { font-size: clamp(44px, 13vw, 60px); margin-bottom: 14px; }
   .h1-kashmir { position: static; width: auto; height: auto; overflow: visible; clip: auto; clip-path: none; white-space: normal; }
   .hero-sub { font-size: 17px; margin-bottom: 18px; }

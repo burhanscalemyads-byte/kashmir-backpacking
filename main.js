@@ -46,10 +46,10 @@ const attribution = (() => {
   const term = (params.get("kw") || params.get("utm_term") || "").toLowerCase();
   if (!term) return;
   const rules = [
-    [/solo|alone|single/, "Going solo? Join a group of 12–18 travellers for seven days. From ₹18,999."],
-    [/budget|cheap|low cost|affordable|under/, "Stays, meals and transport for seven days, all included. From ₹18,999."],
-    [/group|friends|college/, "Seven days with a group of 12–18 travellers and a local trip captain. From ₹18,999."],
-    [/gulmarg|sonamarg|pahalgam/, "Gulmarg, Sonamarg and Pahalgam in one week, with a small group. From ₹18,999."],
+    [/solo|alone|single/, "Going solo? Join a group of 12–18 travellers for seven days."],
+    [/budget|cheap|low cost|affordable|under/, "Stays, meals and transport for seven days, all included."],
+    [/group|friends|college/, "Seven days with a group of 12–18 travellers and a local trip captain."],
+    [/gulmarg|sonamarg|pahalgam/, "Gulmarg, Sonamarg and Pahalgam in one week, with a small group."],
   ];
   const match = rules.find(([re]) => re.test(term));
   const sub = document.getElementById("hero-sub");
