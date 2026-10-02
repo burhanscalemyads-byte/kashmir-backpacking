@@ -72,7 +72,7 @@ While `FORM_ENDPOINT` is empty, submitting logs the lead to the browser console 
 
 - **Conversion:** uncomment the block in the `<head>` of `thank-you.html` and fill in your `AW-` ID and conversion label.
 - **Auto-tagging:** keep it on in Google Ads. The page stores `gclid` with every lead, so you can import offline conversions (leads that became bookings) later.
-- **Keyword-matched headline:** add `{keyword}` to your final URL suffix, e.g. `kw={keyword}`. The page picks one of a few pre-written headlines (solo, budget, group, Gulmarg/Sonamarg/Pahalgam, backpacking). Raw search text is never shown. Edit the list in `matchHeadline()` in `main.js`.
+- **Keyword-matched headline:** add `{keyword}` to your final URL suffix, e.g. `kw={keyword}`. The headline stays "Kashmir Backpacking Trip"; the line under it switches to one of a few pre-written versions (solo, budget, group, Gulmarg/Sonamarg/Pahalgam). Raw search text is never shown. Edit the list in `matchHeadline()` in `main.js`.
 - **Google Tag Manager:** a `lead_submit` event is pushed to `dataLayer` on each successful enquiry.
 
 ## 5. Test and publish

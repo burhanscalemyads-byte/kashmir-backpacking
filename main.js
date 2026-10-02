@@ -39,21 +39,21 @@ const attribution = (() => {
   return result;
 })();
 
-/* ---------- Keyword-matched headline ---------- */
-// Only whitelisted headlines are ever shown; the search term just picks one.
+/* ---------- Keyword-matched supporting line ---------- */
+// The headline stays "Kashmir Backpacking Trip". The search term picks one of
+// these whitelisted lines underneath it; raw search text is never shown.
 (function matchHeadline() {
   const term = (params.get("kw") || params.get("utm_term") || "").toLowerCase();
   if (!term) return;
   const rules = [
-    [/solo|alone|single/, "Going solo? Your Kashmir crew is waiting."],
-    [/budget|cheap|low cost|affordable|under/, "Kashmir on a backpacker's budget."],
-    [/group|friends|college/, "The Kashmir group trip you'll talk about for years."],
-    [/gulmarg|sonamarg|pahalgam/, "Gulmarg, Sonamarg and Pahalgam in one week."],
-    [/backpack/, "Backpack Kashmir with people you'll want to keep."],
+    [/solo|alone|single/, "Going solo? Join a group of 12–18 travellers for seven days. From ₹18,999."],
+    [/budget|cheap|low cost|affordable|under/, "Stays, meals and transport for seven days, all included. From ₹18,999."],
+    [/group|friends|college/, "Seven days with a group of 12–18 travellers and a local trip captain. From ₹18,999."],
+    [/gulmarg|sonamarg|pahalgam/, "Gulmarg, Sonamarg and Pahalgam in one week, with a small group. From ₹18,999."],
   ];
   const match = rules.find(([re]) => re.test(term));
-  const title = document.getElementById("hero-title");
-  if (match && title) title.textContent = match[1];
+  const sub = document.getElementById("hero-sub");
+  if (match && sub) sub.textContent = match[1];
 })();
 
 /* ---------- Travel month options ---------- */
