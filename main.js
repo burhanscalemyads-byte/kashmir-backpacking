@@ -23,18 +23,54 @@ function store(key, value) {
   return null;
 }
 
-/* ---------- Ad attribution (gclid / UTM) ---------- */
-const ATTR_KEYS = ["gclid", "gbraid", "wbraid", "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
+/* ---------- Ad attribution ----------
+   Read when the visitor lands and kept for the visit, so a lead is credited to the ad
+   they clicked even if they browse around first. A new ad click replaces it.
+   URL parameters (set in the ad platform, see README):
+     utm_source, utm_medium, campaign_id, adset_id, ad_id, kw
+   Fallbacks: utm_id or Google's auto-added gad_campaignid for the campaign, adgroupid /
+   creative for Google Ads, and a source/medium worked out from gclid, fbclid or the referrer. */
 const params = new URLSearchParams(location.search);
+function param(...names) {
+  for (const name of names) {
+    const value = (params.get(name) || "").trim();
+    // skip placeholders the ad platform didn't fill in, like "{keyword}" or "{{ad.id}}"
+    if (value && !/^\{.*\}$/.test(value)) return value.slice(0, 200);
+  }
+  return "";
+}
+
+function trafficSource(click) {
+  if (click.utm_source) return { source: click.utm_source, medium: click.utm_medium };
+  if (click.gclid || click.gbraid || click.wbraid) return { source: "google", medium: "cpc" };
+  if (click.fbclid) return { source: "facebook", medium: "social" };
+  let host = "";
+  try { host = new URL(document.referrer).hostname.replace(/^www\./, ""); } catch (e) { /* no referrer */ }
+  if (!host || host === location.hostname.replace(/^www\./, "")) return { source: "(direct)", medium: "(none)" };
+  const engine = host.match(/(?:^|\.)(google|bing|yahoo|duckduckgo|ecosia)\./);
+  return engine ? { source: engine[1], medium: "organic" } : { source: host, medium: "referral" };
+}
 
 const attribution = (() => {
-  let saved = {};
-  try { saved = JSON.parse(store("bk_attr") || "{}"); } catch (e) { saved = {}; }
-  const fresh = {};
-  ATTR_KEYS.forEach((k) => { if (params.get(k)) fresh[k] = params.get(k).slice(0, 200); });
-  // A new ad click replaces the old attribution as a whole
-  const result = Object.keys(fresh).length ? fresh : saved;
-  if (!result.landing_url) result.landing_url = location.href.split("#")[0].slice(0, 500);
+  const click = {
+    utm_source: param("utm_source"),
+    utm_medium: param("utm_medium"),
+    campaign_id: param("campaign_id", "utm_id", "gad_campaignid", "campaignid"),
+    adset_id: param("adset_id", "adgroup_id", "adgroupid"),
+    ad_id: param("ad_id", "creative"),
+    keyword: param("kw", "utm_term"),
+    gclid: param("gclid"),
+    gbraid: param("gbraid"),
+    wbraid: param("wbraid"),
+    fbclid: param("fbclid"),
+  };
+  let saved = null;
+  try { saved = JSON.parse(store("bk_attr") || "null"); } catch (e) { saved = null; }
+  const isNewClick = Object.values(click).some(Boolean);
+  if (saved && saved.source && !isNewClick) return saved;
+
+  const { fbclid, utm_source, utm_medium, ...ids } = click;
+  const result = { ...trafficSource(click), ...ids, landing_url: location.href.split("#")[0].slice(0, 500) };
   store("bk_attr", JSON.stringify(result));
   return result;
 })();
@@ -148,8 +184,8 @@ async function sendLead(payload) {
     console.info("[Glabol] FORM_ENDPOINT is empty. Lead not sent:", payload);
     return;
   }
-  const body = new FormData();
-  Object.entries({ ...FORM_EXTRA_FIELDS, ...payload }).forEach(([k, v]) => body.append(k, v));
+  // URL-encoded: what Apps Script reads into e.parameter, and accepted by every form service
+  const body = new URLSearchParams({ ...FORM_EXTRA_FIELDS, ...payload });
 
   // Apps Script web apps don't return CORS headers, so the response can't be read
   if (FORM_ENDPOINT.includes("script.google.com")) {
@@ -173,6 +209,8 @@ document.querySelectorAll(".lead-form").forEach((form) => {
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+    // Hidden field only bots fill in: drop the submission without sending or converting
+    if (form.elements.website_url && form.elements.website_url.value) return;
     if (sending || !validate(form)) return;
 
     sending = true;
@@ -186,7 +224,6 @@ document.querySelectorAll(".lead-form").forEach((form) => {
       month: form.elements.month.value,
       group_size: form.elements.group_size.value,
       form_location: form.closest("#enquire") ? "hero" : "final",
-      submitted_at: new Date().toISOString(),
       ...attribution,
     };
 

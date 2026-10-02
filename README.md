@@ -53,32 +53,58 @@ Aim for under 350 KB for `hero.jpg` and under 150 KB for the others.
 
 **Changing the hero photo.** Replace `images/hero.jpg` (landscape, about 2000px wide). The page mirrors it, so the left side, where the headline sits, should be sky or calm scenery.
 
-## 3. Choose where leads go
+## 3. Leads go to a Google Sheet
 
-Open `main.js` and set `FORM_ENDPOINT` at the top. Each lead sends these fields: `name, phone, month, group_size, form_location, submitted_at, gclid, gbraid, wbraid, utm_*, landing_url`.
+Every enquiry becomes a row in the sheet, and the sheet owner gets an email alert with a WhatsApp link to the lead. The sheet columns are:
 
-- **Google Sheet (in use):** follow the setup steps at the top of [`tools/google-sheet-leads.gs`](tools/google-sheet-leads.gs). The script:
-  - adds each lead to the Sheet;
-  - emails `NOTIFY_EMAIL`;
-  - forwards the lead to `CRM_WEBHOOK_URL` once you set it, so connecting a CRM later needs no website change.
-- **Web3Forms:** `FORM_ENDPOINT = "https://api.web3forms.com/submit"` and `FORM_EXTRA_FIELDS = { access_key: "YOUR_KEY" }`.
-- **Formspree:** `FORM_ENDPOINT = "https://formspree.io/f/YOUR_ID"`.
-- **CRM, Zapier or Make:** paste the webhook URL.
+| Timestamp | Name | Phone | Travel month | Travellers | Source | Medium | Campaign ID | Adset ID | Ad ID | Keyword | GCLID | Landing page | Form |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 
-While `FORM_ENDPOINT` is empty, submitting logs the lead to the browser console and still goes to the thank-you page, so you can test the flow.
+- **Setup:** follow the 5 steps at the top of [`tools/google-sheet-leads.gs`](tools/google-sheet-leads.gs), then put the web app URL in `FORM_ENDPOINT` at the top of `main.js`.
+- **Your own columns:** add "Status" or "Notes" columns, or reorder them, anywhere in the sheet. Leads are matched to columns by header name.
+- **Junk filter:** the script only accepts a name plus a valid Indian mobile number. A hidden field also catches form-filling bots, which are dropped without counting as an Ads conversion.
+- **Email alerts:** a free Gmail account can send about 100 a day. Leads are still saved after that.
+- **CRM later:** set `CRM_WEBHOOK_URL` in the script and every lead is also forwarded there. The website doesn't need to change.
 
-## 4. Google Ads tracking
+While `FORM_ENDPOINT` is empty, submitting logs the lead to the browser console and still goes to the thank-you page, so you can test the flow. Other services also work in `FORM_ENDPOINT`, for example Formspree, or Web3Forms with `FORM_EXTRA_FIELDS = { access_key: "YOUR_KEY" }`.
 
+## 4. Ad tracking
+
+**Google Ads final URL suffix.** Set it once for the whole account under Admin → Account settings → Tracking → Final URL suffix. You can also set it per campaign under Campaign settings → Additional settings → Campaign URL options.
+
+```
+utm_source=google&utm_medium=cpc&campaign_id={campaignid}&adset_id={adgroupid}&ad_id={creative}&kw={keyword}
+```
+
+Google fills in the `{…}` values on every click. "Adset ID" holds the Google Ads ad group ID.
+
+**Meta (Facebook / Instagram) ads.** Put this in each ad's URL parameters:
+
+```
+utm_source=facebook&utm_medium=paid_social&campaign_id={{campaign.id}}&adset_id={{adset.id}}&ad_id={{ad.id}}
+```
+
+**How the columns are filled:**
+- **Source and Medium** come from `utm_source` and `utm_medium`. Without them, the page works them out:
+  - a Google Ads click is `google / cpc`;
+  - organic search is, for example, `google / organic`;
+  - another website is `site / referral`;
+  - no referrer is `(direct) / (none)`.
+- **Campaign ID** falls back to `gad_campaignid`, which Google's auto-tagging adds. Google Ads leads therefore get a campaign ID even if the suffix is missing.
+- **Values Google can't fill** are left blank. For example, Performance Max has no ad group or ad ID, and Demand Gen has no keyword.
+- **Credit for the ad click:** attribution is saved when the visitor lands, so the lead is credited to the ad click even if they browse around or reload first.
+
+**Other tracking:**
 - **Conversion:** uncomment the block in the `<head>` of `thank-you.html` and fill in your `AW-` ID and conversion label.
-- **Auto-tagging:** keep it on in Google Ads. The page stores `gclid` with every lead, so you can import offline conversions (leads that became bookings) later.
-- **Keyword-matched headline:** add `{keyword}` to your final URL suffix, e.g. `kw={keyword}`. The headline stays "Kashmir Backpacking Trip"; the line under it switches to one of a few pre-written versions (solo, budget, group, Gulmarg/Sonamarg/Pahalgam). Raw search text is never shown. Edit the list in `matchHeadline()` in `main.js`.
-- **Google Tag Manager:** a `lead_submit` event is pushed to `dataLayer` on each successful enquiry, and a `whatsapp_click` event on each WhatsApp tap. Its `link_location` says which button was tapped: `hero-form`, `faq`, `final-form` or `sticky-bar`. You can import it as a secondary conversion.
+- **Auto-tagging:** keep it on in Google Ads. The `GCLID` column lets you import offline conversions (leads that became bookings) later.
+- **Keyword-matched line:** the `kw={keyword}` part of the suffix also picks the hero's supporting line (solo, budget, group, Gulmarg/Sonamarg/Pahalgam). Raw search text is never shown. Edit the list in `matchHeadline()` in `main.js`.
+- **Google Tag Manager:** a `lead_submit` event is pushed to `dataLayer` on each enquiry, and a `whatsapp_click` event on each WhatsApp tap. Its `link_location` is one of `hero-form`, `faq`, `final-form` or `sticky-bar`. You can import it as a secondary conversion.
 
 ## 5. Test and publish
 
 ```bash
 cd ~/kashmir-backpacking && python3 -m http.server 8080
-# open http://localhost:8080/?kw=kashmir+solo+trip&gclid=test123&utm_source=google
+# open http://localhost:8080/?utm_source=google&utm_medium=cpc&campaign_id=111&adset_id=222&ad_id=333&kw=kashmir+solo+trip&gclid=test123
 ```
 
 ## 6. Hosting: kashmir.glabol.com
