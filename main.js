@@ -1,5 +1,5 @@
 /* =========================================================
-   Basecamp Kashmir — landing page behaviour
+   Glabol Kashmir — landing page behaviour
    ========================================================= */
 
 // ---- Settings: edit these -------------------------------------------------
@@ -129,7 +129,7 @@ function validate(form) {
 
 async function sendLead(payload) {
   if (!FORM_ENDPOINT) {
-    console.info("[Basecamp Kashmir] FORM_ENDPOINT is empty. Lead not sent:", payload);
+    console.info("[Glabol] FORM_ENDPOINT is empty. Lead not sent:", payload);
     return;
   }
   const body = new FormData();

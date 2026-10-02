@@ -1,4 +1,4 @@
-# Basecamp Kashmir: landing page
+# Glabol Kashmir: landing page
 
 A static landing page for Google Ads lead capture. There's no build step: open `index.html` or upload the folder anywhere.
 
@@ -16,7 +16,7 @@ Everything below is a realistic placeholder. Search `index.html` and `thank-you.
 
 | Placeholder | Where |
 |---|---|
-| Brand "Basecamp Kashmir" and the logo | header, footer, `<title>`, thank-you page |
+| ~~Brand and logo~~ Done: Glabol logo in the header and footer | — |
 | `+91 98765 43210` / `919876543210` | header, footer, WhatsApp links, `SUPPORT_PHONE` in `main.js` |
 | `hello@example.com`, Srinagar address | footer |
 | ₹18,999 / ₹21,499 / ₹5,000 deposit | hero, price section, JSON-LD in `<head>` |
