@@ -34,7 +34,6 @@ All photos are in place. Your own traveller photos are used for the form card, r
 | File | Source | Used for |
 |---|---|---|
 | `hero.jpg` | Wikimedia Commons (Sonamarg) | Hero background |
-| `hero-mask.svg`, `hero-clouds.png` | Generated from hero.jpg | Peaks and clouds in front of "KASHMIR" |
 | `hero-card.jpg` | Your group by the river | Top of the enquiry card |
 | `avatar-1.jpg` … `avatar-3.jpg` | Faces cropped from the same group photo | Rating chip |
 | `day-1-srinagar.jpg` … `day-7-srinagar.jpg` | Wikimedia Commons | Itinerary days |
@@ -52,7 +51,7 @@ python3 tools/img.py ~/Desktop/new.jpg images/mood-3.jpg 760 58 0 0.4 1 0.5     
 
 Aim for under 350 KB for `hero.jpg` and under 150 KB for the others.
 
-**Changing the hero photo.** The "KASHMIR behind the mountains" effect is cut to fit this exact photo. After replacing `hero.jpg`, run the local server (step 5) and open `http://localhost:8080/tools/skymask.html`. Check the preview, then download both files into `images/`, replacing `hero-mask.svg` and `hero-clouds.png`. Pick a photo with clear sky at the top.
+**Changing the hero photo.** Replace `images/hero.jpg` (landscape, about 2000px wide). The page mirrors it, so the left side, where the headline sits, should be sky or calm scenery.
 
 ## 3. Choose where leads go
 

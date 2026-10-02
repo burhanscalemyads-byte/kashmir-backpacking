@@ -123,55 +123,21 @@ a { color: inherit; }
   position: absolute; inset: 0; z-index: -1;
   background: linear-gradient(180deg, #5E8BB0 0%, #8DB2CE 38%, #D3E1E8 70%);
 }
-.ridge, .hero-photo, .hero-clouds, .hero-fg, .hero-shade { position: absolute; inset: 0; width: 100%; height: 100%; }
-.hero-photo { object-fit: cover; object-position: center 15%; }
-/* Mirrored: the tall peak goes to the right (behind the form) and the left stays
-   open sky, so the whole word KASHMIR is readable */
-.hero-photo, .hero-fg, .hero-clouds { transform: scaleX(-1); }
-/* Same photo and the same cover/position maths as .hero-photo, cut to below the skyline */
-.hero-fg {
-  background: url("images/hero.jpg") center 15% / cover no-repeat;
-  -webkit-mask: url("images/hero-mask.svg") center 15% / cover no-repeat;
-  mask: url("images/hero-mask.svg") center 15% / cover no-repeat;
-}
-/* Clouds drift softly in front of the wordmark */
-.hero-clouds {
-  z-index: 3;
-  opacity: .35;
-  background: url("images/hero.jpg") center 15% / cover no-repeat;
-  -webkit-mask: url("images/hero-clouds.png") center 15% / cover no-repeat;
-  mask: url("images/hero-clouds.png") center 15% / cover no-repeat;
-}
-.hero.no-photo .hero-fg, .hero.no-photo .hero-clouds { display: none; }
+.ridge, .hero-photo, .hero-shade { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* Mirrored so the tall peak sits on the right, behind the form, and the left
+   side (where the headline is) is open sky */
+.hero-photo { object-fit: cover; object-position: center 15%; transform: scaleX(-1); }
 .ridge-back  { z-index: 0; }
 .hero-photo  { z-index: 1; }
-.wordmark    { z-index: 2; }
-.ridge-front { z-index: 4; display: none; }
-.hero-fg     { z-index: 4; }
+.ridge-front { z-index: 2; display: none; }
 .hero-shade  {
-  z-index: 5;
+  z-index: 3;
   background:
-    linear-gradient(0deg, rgba(12, 28, 20, .62) 0%, rgba(12, 28, 20, 0) 55%),
-    linear-gradient(90deg, rgba(12, 28, 20, .38) 0%, rgba(12, 28, 20, 0) 50%);
+    linear-gradient(0deg, rgba(12, 28, 20, .55) 0%, rgba(12, 28, 20, 0) 50%),
+    linear-gradient(90deg, rgba(12, 28, 20, .42) 0%, rgba(12, 28, 20, 0) 55%);
 }
-
-/* No photo yet: drawn ridges stand in, with the wordmark between them */
+/* No photo yet: drawn ridges stand in */
 .hero.no-photo .ridge-front { display: block; }
-
-/* The wordmark IS the "Kashmir" of the headline on desktop: sized to the left
-   column (viewport minus frame, padding, form card and gap) so the form never covers it */
-.hero { --wm: clamp(96px, calc((100vw - 2 * var(--frame) - 96px - 448px) / 4.3), 250px); }
-.wordmark {
-  position: absolute; left: 44px; right: auto;
-  top: 100px;
-  margin: 0;
-  text-align: left;
-  font: 800 var(--wm)/.8 var(--display);
-  letter-spacing: -0.04em;
-  color: rgba(255, 255, 255, .92);
-  text-shadow: 0 6px 30px rgba(16, 48, 84, .28);
-  user-select: none;
-}
 
 /* ---------- Glass pill header ---------- */
 .topbar {
@@ -201,26 +167,47 @@ a { color: inherit; }
 .topbar-call { font-weight: 500; font-size: 15px; text-decoration: none; }
 .topbar-call:hover { text-decoration: underline; }
 
-/* ---------- Hero content ---------- */
+/* ---------- Hero content ----------
+   Two columns, both centred vertically: the left column is one tight block
+   (KASHMIR, Backpacking Trip, line, rating, facts), the form sits on the right. */
 .hero-grid {
   position: relative; z-index: 1;
   flex: 1;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(340px, 400px);
-  align-items: stretch;
+  align-items: center;
   gap: 48px;
-  padding: 40px 48px 44px;
+  padding: 36px 48px 48px;
 }
-.form-card { justify-self: end; align-self: start; width: 100%; }
+.form-card { justify-self: end; width: 100%; }
 
-/* Starts right under the wordmark so "KASHMIR / Backpacking Trip" reads as one headline.
-   Header (~82px) + grid padding (40px) = 122px; wordmark ends at 100px + 0.8em. */
-.hero-copy {
-  margin-top: calc(100px + 0.8 * var(--wm) + 14px - 122px);
-  display: flex; flex-direction: column; justify-content: space-between; gap: 36px;
+.hero-title {
+  color: var(--snow);
+  font-size: clamp(44px, 5vw, 80px);
+  line-height: .95;
+  letter-spacing: -0.04em;
+  margin-bottom: 20px;
 }
+/* "Kashmir" as a giant word, sized so it fills the left column but never
+   reaches the form (viewport minus frame, padding, form and gap) */
+.h1-kashmir {
+  display: block;
+  font-size: clamp(96px, calc((100vw - 2 * var(--frame) - 96px - 448px) / 4.3), 230px);
+  font-weight: 800;
+  line-height: .8;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .94);
+  text-shadow: 0 8px 40px rgba(10, 30, 20, .25);
+  margin: 0 0 14px -0.04em;
+}
+.hero-sub { max-width: 36ch; font-size: 19px; line-height: 1.5; color: rgba(255, 255, 255, .92); margin-bottom: 22px; }
 
-/* Trip facts: lines up with the bottom of the form so the left column ends with it */
+/* Rating: one quiet line */
+.rating-line { display: flex; align-items: center; gap: 12px; font-size: 15px; color: rgba(255, 255, 255, .9); margin-bottom: 28px; }
+.rating-line strong { color: var(--snow); font-weight: 600; }
+
+/* Trip facts: price, duration, next departure */
 .hero-facts {
   display: grid; grid-template-columns: repeat(3, auto); justify-content: start;
   margin: 0; padding: 16px 8px;
@@ -235,26 +222,6 @@ a { color: inherit; }
 .hero-facts div + div { border-left: 1px solid rgba(255, 255, 255, .25); }
 .hero-facts dt { font: 600 26px/1.1 var(--display); letter-spacing: -0.02em; color: var(--snow); }
 .hero-facts dd { margin: 4px 0 0; font-size: 14px; color: rgba(255, 255, 255, .82); }
-.hero-title {
-  color: var(--snow);
-  font-size: clamp(44px, 5.2vw, 84px);
-  line-height: .95;
-  letter-spacing: -0.04em;
-  max-width: 8em;
-  text-wrap: balance;
-  margin-bottom: 22px;
-}
-/* Desktop: "Kashmir" is shown by the wordmark, so hide it visually (still read
-   by search engines and screen readers). Phones show it, see the 760px query. */
-.h1-kashmir {
-  position: absolute; width: 1px; height: 1px; overflow: hidden;
-  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
-}
-.hero-sub { max-width: 36ch; font-size: 19px; line-height: 1.5; color: rgba(255, 255, 255, .92); margin-bottom: 28px; }
-
-/* Rating: one quiet line under the headline */
-.rating-line { display: flex; align-items: center; gap: 12px; font-size: 15px; color: rgba(255, 255, 255, .9); }
-.rating-line strong { color: var(--snow); font-weight: 600; }
 
 /* ---------- Form card (the floating white card) ---------- */
 .form-card {
@@ -610,20 +577,19 @@ a { color: inherit; }
   .day .ph::before { display: none; }
   .day h3 { font-size: 19px; margin-bottom: 4px; }
   .day p:last-child { font-size: 14.5px; line-height: 1.5; }
-  /* On phones the headline already says "Kashmir"; the wordmark would repeat it */
-  .wordmark, .hero-clouds { display: none; }
   .hero-grid {
     grid-template-columns: 1fr;
     gap: 28px;
     padding: 48px 16px 16px;
   }
-  .hero-copy { margin-top: 0; gap: 22px; }
   .hero-facts { width: 100%; grid-template-columns: repeat(3, 1fr); padding: 12px 0; }
   .hero-facts div { padding: 0 12px; }
   .hero-facts dt { font-size: 19px; }
   .hero-facts dd { font-size: 12.5px; }
   .hero-title { font-size: clamp(44px, 13vw, 60px); margin-bottom: 14px; }
-  .h1-kashmir { position: static; width: auto; height: auto; overflow: visible; clip: auto; clip-path: none; white-space: normal; }
+  /* Phones: one normal-sized headline, "Kashmir Backpacking Trip" */
+  .h1-kashmir { display: inline; font-size: inherit; font-weight: inherit; line-height: inherit; letter-spacing: inherit; text-transform: none; text-shadow: none; margin: 0; }
+  .rating-line { margin-bottom: 20px; }
   .hero-sub { font-size: 17px; margin-bottom: 18px; }
   .price-grid { grid-template-columns: 1fr; }
   .price-box { display: block; }
