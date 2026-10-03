@@ -63,12 +63,13 @@ const attribution = (() => {
   const term = (params.get("kw") || params.get("utm_term") || "").toLowerCase();
   if (!term) return;
   const rules = [
-    [/solo|alone|single/, "Going solo? Join a group of 18–35 year olds for eight days, Delhi to Delhi."],
-    [/budget|cheap|low cost|affordable|under/, "Bus from Delhi, 5 nights' stay, breakfasts and dinners: all included."],
-    [/group|friends|college/, "Eight days with a group of 18–35 year olds and a dedicated tour captain."],
-    [/houseboat|dal lake/, "A night on a houseboat, then Gulmarg, Sonamarg and Pahalgam in eight days."],
-    [/gulmarg|sonamarg|sonmarg|pahalgam|betaab|betab|\baru\b/, "Gulmarg, Sonamarg and Pahalgam in eight days, with a night on a houseboat."],
-    [/delhi/, "Eight days, Delhi to Delhi, with the bus, stays and meals included."],
+    [/solo|alone|single/, "Going solo? Join a group of 18–35 year olds for five nights in Kashmir."],
+    [/budget|cheap|low cost|affordable|under/, "Stays, breakfasts, dinners and GST included. Add the Delhi bus for ₹3,000."],
+    [/group|friends|college/, "Five nights in Kashmir with a group of 18–35 year olds and a tour captain."],
+    [/houseboat|dal lake/, "A night on a houseboat, then Gulmarg, Sonamarg and Pahalgam."],
+    [/gulmarg|sonamarg|sonmarg|pahalgam|betaab|betab|\baru\b/, "Gulmarg, Sonamarg and Pahalgam, plus a night on a houseboat in Srinagar."],
+    [/delhi/, "Eight days from Delhi, with the bus both ways, stays and meals included."],
+    [/jammu|srinagar/, "Join in Jammu or Srinagar: five nights in Kashmir with a group of 18–35s."],
   ];
   const match = rules.find(([re]) => re.test(term));
   const sub = document.getElementById("hero-sub");

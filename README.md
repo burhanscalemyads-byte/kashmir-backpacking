@@ -20,18 +20,23 @@ The trip details come from the brochure **KASHMIR TRIP - GLABOL INDIA.pdf** (Oct
 - the packing list, terms and cancellation policy;
 - all 38 batch dates.
 
-The price is ₹13,999 per person (triple/quad sharing, GST included).
+Prices per person (triple/quad sharing, GST included):
+- **₹14,000** with boarding and drop in Jammu or Srinagar.
+- **₹17,000** from Delhi: ₹3,000 extra, which adds the bus to Jammu and back.
+
+The brochure's batch dates are the Delhi dates. Jammu and Srinagar travellers are with the group from day 2 to day 7.
 
 | Item | Where |
 |---|---|
-| Price ₹13,999 | `<title>`, og:title, JSON-LD, hero facts bar, price box (`index.html`); budget question (`thank-you.html`) |
+| Prices ₹14,000 / ₹17,000 | `<title>`, meta and og tags, JSON-LD offers, hero facts bar, price box, included/not-included lists, FAQ "Where does the trip start and end?", keyword line for budget searches (`main.js`); budget question (`thank-you.html`) |
+| Rating 4.5/5 from 1,685 reviews | hero rating line and reviews heading |
 | Day-by-day plan | route section: the `data-stops` on the chart (one stop per day, with altitude) and the day cards |
 | Batch dates | departures section: one `<li data-start="YYYY-MM-DD">` per batch. Past batches hide themselves and the hero's "next batch" date updates on its own. To add next season, copy a row and change its dates, month and batch number. |
 | Inclusions, exclusions, terms, packing list | price section and FAQ |
 
 **No phone numbers on the page, by choice.** Every enquiry goes through the form, so each lead is tracked and lands in the sheet. That's why there are no call or WhatsApp buttons either.
 
-**Still placeholders:** the 4.8 rating and 1,240 Google reviews (hero rating line and reviews heading), and the three reviews with their names. Replace them with real ones; ad policies require them to be true before you run ads.
+**Still placeholders:** the three reviews and their names. Replace them with real ones; ad policies require them to be true before you run ads.
 
 ## 2. Photos
 
