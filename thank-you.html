@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;800&family=Inter:wght@400;500;600&display=swap">
-  <link rel="stylesheet" href="styles.css?v=00649a87">
+  <link rel="stylesheet" href="styles.css?v=d1f2ad3a">
   <!-- Meta Pixel and Google Ads conversions are set up in site.js -->
   <style>
     .thanks {
@@ -25,7 +25,6 @@
     .next li::before { content: "Step " counter(step); display: block; font: 600 13px/1 var(--body); color: var(--forest); margin-bottom: 10px; }
     .next strong { display: block; font: 600 20px/1.2 var(--display); color: var(--forest); margin-bottom: 6px; letter-spacing: -0.02em; }
     .thanks-actions { display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center; }
-    .thanks-actions .back { color: var(--forest); font-weight: 500; }
     .thanks .btn-arrow { background: var(--forest); }
     .thanks .btn-arrow svg { stroke: var(--lime); }
 
@@ -92,7 +91,7 @@
       </div>
 
       <div class="qualify-step" data-key="budget_fit" role="group" aria-labelledby="q-budget" hidden>
-        <h2 id="q-budget" tabindex="-1">The trip is ₹18,999 per person, plus your travel to Srinagar. Does that fit your budget?</h2>
+        <h2 id="q-budget" tabindex="-1">The trip is ₹13,999 per person including GST, starting and ending in Delhi. Does that fit your budget?</h2>
         <div class="qualify-options">
           <button type="button" value="Fits">Yes, that fits</button>
           <button type="button" value="A bit high, but open">A bit high, but I'm open</button>
@@ -131,22 +130,21 @@
 
     <section class="thanks-done" id="thanks-done">
       <h1 id="thanks-title">Your Kashmir trip is on its way.</h1>
-      <p id="thanks-call">A trip captain will call you within 2 hours, between 9am and 9pm. Keep your phone close. The call comes from +91 98765 43210.</p>
+      <p id="thanks-call">A trip captain will call you within 2 hours, between 9am and 9pm. Keep your phone close.</p>
       <ol class="next">
         <li><strong>We call you</strong>A 10-minute chat about your dates, who's coming and any questions.</li>
         <li><strong>You get the plan</strong>The full day-by-day itinerary and packing list on WhatsApp.</li>
-        <li><strong>Hold your seat</strong>Pay ₹5,000 to lock your spot. The rest is due 21 days before you fly.</li>
+        <li><strong>Confirm your seat</strong>Pay the booking amount to lock your spot. The rest is due at least 20 days before the trip.</li>
       </ol>
       <div class="thanks-actions">
-        <a class="btn" data-wa="thank-you" href="https://wa.me/919876543210?text=Hi%2C%20I%20just%20sent%20an%20enquiry%20for%20the%20Kashmir%20backpacking%20trip.">
-          <span class="btn-label">Can't wait? WhatsApp us</span>
+        <a class="btn" href="index.html#route-title">
+          <span class="btn-label">See the day-by-day plan</span>
           <span class="btn-arrow" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 6 L14 14 M14 7 V14 H7"/></svg></span>
         </a>
-        <a class="back" href="index.html">Back to the trip</a>
       </div>
     </section>
   </main>
-  <script src="site.js?v=c92befc1" defer></script>
-  <script src="thank-you.js?v=6a562a07" defer></script>
+  <script src="site.js?v=ec2b3d2c" defer></script>
+  <script src="thank-you.js?v=c4eab407" defer></script>
 </body>
 </html>

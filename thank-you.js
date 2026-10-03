@@ -38,7 +38,7 @@ const CALL_TIMES = {
     const when = lead.answers && CALL_TIMES[lead.answers.call_time];
     if (when) {
       document.getElementById("thanks-call").textContent =
-        `A trip captain will call you ${when}, as you asked. Keep your phone close. The call comes from ${SUPPORT_PHONE}.`;
+        `A trip captain will call you ${when}, as you asked. Keep your phone close.`;
     }
   }
 

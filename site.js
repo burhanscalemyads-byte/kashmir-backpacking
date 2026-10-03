@@ -11,7 +11,6 @@ const FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbwYnAfwqPfea57MW3
 // Extra fields some services need, e.g. { access_key: "..." } for Web3Forms.
 const FORM_EXTRA_FIELDS = {};
 const THANK_YOU_URL = "thank-you.html";
-const SUPPORT_PHONE = "+91 98765 43210";
 
 // Ad tracking. Leave a value empty to switch that tag off.
 const META_PIXEL_ID = "4126422144254829";
@@ -96,13 +95,4 @@ const track = {
     }
     window.dataLayer.push({ event: "qualified_lead", ...details });
   },
-  contact() {
-    if (window.fbq) fbq("track", "Contact");
-  },
 };
-
-// WhatsApp taps on any page: a secondary conversion for Meta (Contact), Ads and GTM
-document.querySelectorAll("[data-wa]").forEach((a) => a.addEventListener("click", () => {
-  track.contact();
-  window.dataLayer.push({ event: "whatsapp_click", link_location: a.dataset.wa || a.className });
-}));

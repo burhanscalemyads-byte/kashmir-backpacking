@@ -63,10 +63,12 @@ const attribution = (() => {
   const term = (params.get("kw") || params.get("utm_term") || "").toLowerCase();
   if (!term) return;
   const rules = [
-    [/solo|alone|single/, "Going solo? Join a group of 12–18 travellers for seven days."],
-    [/budget|cheap|low cost|affordable|under/, "Stays, meals and transport for seven days, all included."],
-    [/group|friends|college/, "Seven days with a group of 12–18 travellers and a local trip captain."],
-    [/gulmarg|sonamarg|pahalgam/, "Gulmarg, Sonamarg and Pahalgam in one week, with a small group."],
+    [/solo|alone|single/, "Going solo? Join a group of 18–35 year olds for eight days, Delhi to Delhi."],
+    [/budget|cheap|low cost|affordable|under/, "Bus from Delhi, 5 nights' stay, breakfasts and dinners: all included."],
+    [/group|friends|college/, "Eight days with a group of 18–35 year olds and a dedicated tour captain."],
+    [/houseboat|dal lake/, "A night on a houseboat, then Gulmarg, Sonamarg and Pahalgam in eight days."],
+    [/gulmarg|sonamarg|sonmarg|pahalgam|betaab|betab|\baru\b/, "Gulmarg, Sonamarg and Pahalgam in eight days, with a night on a houseboat."],
+    [/delhi/, "Eight days, Delhi to Delhi, with the bus, stays and meals included."],
   ];
   const match = rules.find(([re]) => re.test(term));
   const sub = document.getElementById("hero-sub");
@@ -110,6 +112,43 @@ document.querySelectorAll(".dep-hold").forEach((a) => a.addEventListener("click"
   goToForm(e);
 }));
 
+/* ---------- Batch dates: drop batches that have left, show the next few ----------
+   Every batch from the brochure is in the HTML (li data-start="YYYY-MM-DD"). */
+(function batchDates() {
+  const list = document.getElementById("dep-list");
+  if (!list) return;
+  const SHOW = 6;
+  const today = new Date(Date.now() + 5.5 * 3600e3).toISOString().slice(0, 10);   // India time
+  const upcoming = [];
+  list.querySelectorAll("li[data-start]").forEach((li) => {
+    if (li.dataset.start <= today) li.remove();
+    else upcoming.push(li);
+  });
+
+  const next = document.getElementById("next-batch");
+  if (!upcoming.length) {
+    if (next) next.textContent = "Soon";
+    list.insertAdjacentHTML("beforeend", "<li><span class=\"dep-note\">New batches are coming soon. Send an enquiry and we'll share the dates first.</span></li>");
+    return;
+  }
+  const fmt = new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", timeZone: "UTC" });
+  if (next) next.textContent = fmt.format(new Date(upcoming[0].dataset.start + "T00:00:00Z")).replace("Sept", "Sep");
+  const pill = upcoming[0].querySelector(".dep-seats");
+  pill.textContent = "Next batch";
+  pill.classList.add("dep-next");
+
+  const more = document.getElementById("dep-more");
+  if (!more || upcoming.length <= SHOW) return;
+  upcoming.slice(SHOW).forEach((li) => { li.hidden = true; });
+  more.textContent = `Show all ${upcoming.length} batch dates`;
+  more.hidden = false;
+  more.addEventListener("click", () => {
+    upcoming.forEach((li) => { li.hidden = false; });
+    more.hidden = true;
+    upcoming[SHOW].querySelector(".dep-hold").focus({ preventScroll: true });
+  });
+})();
+
 /* ---------- Route chart on phones: fade the cut-off edge until it's scrolled to the end ---------- */
 (function chartScrollHint() {
   const box = document.querySelector(".profile-scroll");
@@ -146,7 +185,7 @@ function validate(form) {
   } else showError(name, "");
 
   if (!/^[6-9]\d{9}$/.test(cleanPhone(phone.value))) {
-    showError(phone, "Enter a 10-digit Indian mobile number, like 98765 43210.");
+    showError(phone, "Enter your 10-digit Indian mobile number.");
     firstBad = firstBad || phone;
   } else showError(phone, "");
 
@@ -198,7 +237,7 @@ document.querySelectorAll(".lead-form").forEach((form) => {
       location.href = THANK_YOU_URL;
     } catch (err) {
       console.error(err);
-      status.textContent = `We couldn't send that. Please try again, or WhatsApp us on ${SUPPORT_PHONE}.`;
+      status.textContent = "We couldn't send that. Please check your connection and try again.";
       label.textContent = "Send my enquiry";
       button.disabled = false;
       sending = false;
@@ -214,7 +253,8 @@ document.querySelectorAll(".lead-form").forEach((form) => {
   const stops = JSON.parse(svg.dataset.stops);
 
   const W = 1000, TOP = 80, BOTTOM = 312, LEFT = 96, RIGHT = 930;
-  const MIN = 1000, MAX = 4200;
+  // Sea level to a little above the highest stop, with a grid line every 1,000 m
+  const MIN = 0, MAX = Math.ceil(Math.max(...stops.map(([, alt]) => alt)) / 1000) * 1000 + 300;
   const x = (i) => LEFT + (i * (RIGHT - LEFT)) / (stops.length - 1);
   const y = (alt) => TOP + (1 - (alt - MIN) / (MAX - MIN)) * (BOTTOM - TOP);
   const el = (tag, attrs, parent = svg) => {
@@ -229,10 +269,10 @@ document.querySelectorAll(".lead-form").forEach((form) => {
   el("stop", { offset: "0", "stop-color": "#C6E14B", "stop-opacity": ".45" }, grad);
   el("stop", { offset: "1", "stop-color": "#C6E14B", "stop-opacity": "0" }, grad);
 
-  [2000, 3000, 4000].forEach((alt) => {
+  for (let alt = 1000; alt < MAX; alt += 1000) {
     el("line", { class: "p-grid", x1: 0, x2: W, y1: y(alt), y2: y(alt) });
     el("text", { class: "p-grid-label", x: 0, y: y(alt) - 6 }).textContent = alt.toLocaleString("en-IN") + " m";
-  });
+  }
 
   const pts = stops.map(([, alt], i) => [x(i), y(alt)]);
   let d = `M${pts[0][0]},${pts[0][1]}`;

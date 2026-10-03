@@ -158,20 +158,6 @@ a { color: inherit; }
   mask: url("images/logo-glabol.png") left center / contain no-repeat;
 }
 .topbar-actions { display: flex; align-items: center; gap: 20px; }
-.topbar-call {
-  display: inline-flex; align-items: center; gap: 10px;
-  font: 600 16px/1 var(--body); text-decoration: none; color: var(--snow);
-  text-shadow: 0 1px 10px rgba(10, 30, 20, .45);
-}
-.topbar-call-ico {
-  display: grid; place-items: center;
-  width: 38px; height: 38px; border-radius: 50%;
-  background: rgba(255, 255, 255, .16);
-  border: 1px solid rgba(255, 255, 255, .35);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-}
-.topbar-call:hover .topbar-call-ico { background: rgba(255, 255, 255, .28); }
 /* On desktop the form is already on screen, so the header doesn't repeat it */
 .topbar .topbar-enquire { display: none; }
 
@@ -289,14 +275,6 @@ a { color: inherit; }
 .form-status { font-size: 14px; color: var(--chinar); }
 .form-status:empty { display: none; }
 .form-privacy { font-size: 12.5px; line-height: 1.45; }
-.form-wa {
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  padding: 4px 0 2px;
-  font: 500 14px/1.3 var(--body);
-  color: #18794A;
-  text-decoration: none;
-}
-.form-wa:hover { text-decoration: underline; }
 
 .avatars { display: flex; }
 .avatars .ph {
@@ -449,6 +427,7 @@ a { color: inherit; }
   border-top: 1px solid var(--line);
 }
 .dep-list li:last-child { border-bottom: 1px solid var(--line); }
+.dep-list li[hidden] { display: none; }
 .dep-date { font: 600 20px/1.2 var(--display); color: var(--forest); letter-spacing: -0.02em; }
 .dep-seats {
   justify-self: end;
@@ -456,7 +435,7 @@ a { color: inherit; }
   background: var(--mist-soft); padding: 8px 12px; border-radius: 999px;
   white-space: nowrap;
 }
-.dep-seats.dep-low { background: var(--chinar-soft); color: var(--chinar); }
+.dep-seats.dep-next { background: var(--chinar-soft); color: var(--chinar); }
 .dep-hold {
   font: 600 15px/1 var(--body); color: var(--forest); text-decoration: none;
   padding: 12px 20px; border-radius: 999px;
@@ -465,6 +444,14 @@ a { color: inherit; }
   transition: background-color .2s ease, border-color .2s ease;
 }
 .dep-hold:hover { background: var(--lime); border-color: var(--lime); }
+.dep-more {
+  margin-top: 24px;
+  font: 600 15px/1 var(--body); color: var(--forest);
+  padding: 14px 22px; border-radius: 999px;
+  border: 1.5px solid var(--forest); background: none; cursor: pointer;
+  transition: background-color .2s ease, border-color .2s ease;
+}
+.dep-more:hover { background: var(--lime); border-color: var(--lime); }
 
 /* ---------- Reviews ---------- */
 .review-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
@@ -496,7 +483,6 @@ a { color: inherit; }
 .faq-help p { font-size: 15.5px; margin-bottom: 22px; }
 .faq-help .btn-arrow { background: var(--forest); }
 .faq-help .btn-arrow svg { stroke: var(--lime); }
-.faq-help-call { display: block; width: fit-content; margin-top: 14px; font-size: 14px; color: var(--forest); }
 .faq details { border-top: 1px solid var(--line); }
 .faq details:last-child { border-bottom: 1px solid var(--line); }
 .faq summary {
@@ -517,6 +503,8 @@ a { color: inherit; }
 }
 .faq details[open] summary::after { transform: rotate(45deg); }
 .faq details p { padding: 0 56px 24px 0; max-width: 68ch; }
+.faq details h4 { font: 600 17px/1.3 var(--display); color: var(--forest); margin: 4px 0 10px; }
+.faq details ul { margin: 0; padding: 0 56px 24px 20px; max-width: 68ch; display: grid; gap: 8px; }
 
 /* ---------- Final CTA ---------- */
 .final {
@@ -569,11 +557,6 @@ a { color: inherit; }
 .sticky-bar.is-visible { transform: translateY(0); }
 .sticky-bar .btn-arrow { background: var(--forest); }
 .sticky-bar .btn-arrow svg { stroke: var(--lime); }
-.sticky-wa {
-  display: grid; place-items: center; flex: none;
-  width: 52px; height: 52px; border-radius: 50%;
-  background: #1F9D55; color: var(--snow);
-}
 
 /* =========================================================
    RESPONSIVE
@@ -631,7 +614,6 @@ a { color: inherit; }
   .hero { min-height: 0; }
   .topbar { padding: 16px 16px 0; }
   .brand img { height: 24px; }
-  .topbar-call { display: none; }
   .topbar .topbar-enquire { display: inline-flex; }
   .profile-scroll {
     margin-bottom: 10px;
@@ -668,7 +650,7 @@ a { color: inherit; }
   }
   .tile figcaption { font-size: 14px; padding: 32px 12px 12px; }
   .tile-a figcaption { font-size: 19px; padding: 48px 18px 18px; }
-  .faq details p { padding-right: 0; }
+  .faq details p, .faq details ul { padding-right: 0; }
   .final { padding-inline: 16px; }
 }
 
