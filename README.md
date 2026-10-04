@@ -7,7 +7,7 @@ index.html       the landing page
 thank-you.html   shown after an enquiry: 3 qualifying questions, then "your trip is on its way"
 styles.css       all styling, shared by every destination; it holds no destination colours
 palette.css      this destination's colours, generated from palettes/kashmir.json (don't edit by hand)
-site.js          settings (sheet URL, Meta Pixel / Google Ads IDs), sending, ad tracking
+site.js          settings (sheet URL), sending, and the events GTM listens for
 main.js          landing page: form, ad attribution, keyword headlines, altitude chart
 thank-you.js     the qualifying questions and the Hot / Warm / Cold rule
 images/          your photos
@@ -152,30 +152,31 @@ utm_source=facebook&utm_medium=paid_social&campaign_id={{campaign.id}}&adset_id=
 - **Values Google can't fill** are left blank. For example, Performance Max has no ad group or ad ID, and Demand Gen has no keyword.
 - **Credit for the ad click:** attribution is saved when the visitor lands, so the lead is credited to the ad click even if they browse around or reload first.
 
-**Meta Pixel** (`META_PIXEL_ID` in `site.js`, already set to `4126422144254829`). It sends:
+**Google Tag Manager (`GTM-TTXFHSF9`).** Every ad tag lives in GTM: Google Ads, GA4 and the Meta Pixel. The container snippet is at the top of `index.html` and `thank-you.html`, and the page itself loads no pixel. The page pushes these events to `dataLayer`, all from the thank-you page and only after a real enquiry. A reload or a direct visit sends nothing.
 
-| Event | When |
-|---|---|
-| `PageView` | every page |
-| `Lead` | once per enquiry, when the thank-you page opens. The event ID is the lead ID, so a reload doesn't count twice. |
-| `QualifiedLead` (custom event) | once, when a lead becomes **Hot** |
+| Event | When | Data | GTM tags on it (container v17) |
+|---|---|---|---|
+| `lead_form_submit` | once per enquiry, as the thank-you page opens | `lead_id`; `user_data.phone_number` (+91…, read by the "User Provided Data" variable) | GAds user-provided data, GA4 `generate_lead`, Meta `Lead` |
+| `thank_you_page_view` | straight after it | `lead_id`, `transaction_id` (= lead ID) | GAds conversion (label HilcCIXQsJIcEMG9heQC) |
+| `qualified_lead` | once, when the answers make the lead **Hot** (budget OK, booking within a month) | `lead_id`, `budget_fit`, `booking_timeline` | none yet |
+| `lead_questions_complete` | once, when all three questions are answered | `lead_id`, `lead_quality` (Hot/Warm/Cold), `budget_fit`, `booking_timeline`, `call_time` | none yet |
 
-On the thank-you page the pixel also gets the lead's phone number for matching. The pixel hashes it in the browser before sending it.
+GTM already loads the Meta Pixel and fires PageView on every page.
 
-**Making Meta optimise for quality:**
-1. In Events Manager, create a Custom conversion from the `QualifiedLead` event.
-2. Run ad sets on the Lead event until `QualifiedLead` reaches about 50 a week.
-3. Then switch the ad sets' conversion event to the custom conversion. Meta then looks for people like your Hot leads, not just anyone who fills a form.
+**Making Meta and Google optimise for quality:**
+1. In GTM, add a Meta Pixel tag (custom event `QualifiedLead`) on a Custom Event trigger for `qualified_lead`.
+2. If you like, add a Google Ads conversion tag ("Qualified lead") on the same trigger.
+3. In Meta Events Manager, create a custom conversion from `QualifiedLead`.
+4. Run ad sets on Lead until `QualifiedLead` reaches about 50 a week, then switch them to the custom conversion.
 
-**Google Ads conversions.** In `site.js`, set `GOOGLE_ADS_ID` (`AW-…`). Then set `GOOGLE_ADS_LEAD_LABEL` and, optionally, `GOOGLE_ADS_QUALIFIED_LABEL`, which are the labels of a "Lead" and a "Qualified lead" conversion action. Both fire once per lead, with the lead ID as the transaction ID.
+`lead_questions_complete` with `lead_quality` lets you build audiences or reports by lead quality.
+
+**Every new destination page** keeps this exact setup: the same GTM container, the same event names and the same data. That way the existing GTM tags work on it without changes.
 
 **Other tracking:**
 - **Auto-tagging:** keep it on in Google Ads. The `GCLID` column lets you import offline conversions (leads that became bookings) later.
 - **Keyword-matched line:** the `kw={keyword}` part of the suffix also picks the hero's supporting line (solo, budget, group, houseboat, Gulmarg/Sonamarg/Pahalgam, Delhi). Raw search text is never shown. Edit the list in `matchHeadline()` in `main.js`.
-- **Google Tag Manager:** these events are pushed to `dataLayer`:
-  - `lead_submit` on each enquiry;
-  - `qualified_lead` when a lead becomes Hot.
-- **Privacy line:** the footer says that Meta and Google ad tools measure the ads and may receive the phone number in hashed form. Keep it while the pixel is on.
+- **Privacy line:** the footer says that Meta and Google ad tools measure the ads and may receive the phone number in hashed form. Keep it while those tags run.
 
 ## 5. Test and publish
 

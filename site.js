@@ -1,6 +1,6 @@
 /* =========================================================
-   Glabol Kashmir — shared by every page: settings, sending
-   leads to the sheet, and ad tracking (Meta Pixel, Google Ads)
+   Glabol trip pages — shared by every page: settings, sending
+   leads to the sheet, and the events Google Tag Manager listens for
    ========================================================= */
 
 // ---- Settings: edit these -------------------------------------------------
@@ -12,11 +12,6 @@ const FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbwYnAfwqPfea57MW3
 const FORM_EXTRA_FIELDS = {};
 const THANK_YOU_URL = "thank-you.html";
 
-// Ad tracking. Leave a value empty to switch that tag off.
-const META_PIXEL_ID = "4126422144254829";
-const GOOGLE_ADS_ID = "";               // e.g. "AW-123456789"
-const GOOGLE_ADS_LEAD_LABEL = "";       // label of the "Lead" conversion action
-const GOOGLE_ADS_QUALIFIED_LABEL = "";  // label of the "Qualified lead" conversion action
 // ---------------------------------------------------------------------------
 
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -52,47 +47,19 @@ async function postToSheet(payload) {
   if (!res.ok) throw new Error("Lead endpoint returned " + res.status);
 }
 
-/* ---------- Ad tracking ---------- */
+/* ---------- Ad tracking: all tags (Google Ads, GA4, Meta Pixel) live in GTM; the page only pushes events (README: Ad tracking) ---------- */
 window.dataLayer = window.dataLayer || [];
 
-if (META_PIXEL_ID) {
-  /* Meta Pixel base code */
-  !function (f, b, e, v, n, t, s) {
-    if (f.fbq) return; n = f.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments); };
-    if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = "2.0"; n.queue = [];
-    t = b.createElement(e); t.async = !0; t.src = v; s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s);
-  }(window, document, "script", "https://connect.facebook.net/en_US/fbevents.js");
-  // On the thank-you page, give Meta the lead's phone (the pixel hashes it before sending)
-  // so the Lead and QualifiedLead events match the right person: better targeting.
-  const lead = document.documentElement.dataset.page === "thank-you" ? readLead() : null;
-  if (lead && lead.id) fbq("init", META_PIXEL_ID, { ph: "91" + lead.phoneDigits, external_id: lead.id });
-  else fbq("init", META_PIXEL_ID);
-  fbq("track", "PageView");
-}
-
-if (GOOGLE_ADS_ID) {
-  const tag = document.createElement("script");
-  tag.async = true;
-  tag.src = "https://www.googletagmanager.com/gtag/js?id=" + GOOGLE_ADS_ID;
-  document.head.appendChild(tag);
-  window.gtag = function () { window.dataLayer.push(arguments); };
-  gtag("js", new Date());
-  gtag("config", GOOGLE_ADS_ID);
-}
-
 const track = {
-  // The lead ID doubles as the event ID / transaction ID, so a reload can't count twice
-  lead(id) {
-    if (window.fbq) fbq("track", "Lead", {}, { eventID: id });
-    if (window.gtag && GOOGLE_ADS_LEAD_LABEL) {
-      gtag("event", "conversion", { send_to: GOOGLE_ADS_ID + "/" + GOOGLE_ADS_LEAD_LABEL, transaction_id: id });
-    }
+  // Once per enquiry, on the thank-you page. user_data feeds GTM's "User Provided Data" variable.
+  lead(lead) {
+    window.dataLayer.push({ event: "lead_form_submit", lead_id: lead.id, user_data: { phone_number: "+91" + lead.phoneDigits } });
+    window.dataLayer.push({ event: "thank_you_page_view", lead_id: lead.id, transaction_id: lead.id });
   },
   qualified(id, details) {
-    if (window.fbq) fbq("trackCustom", "QualifiedLead", details, { eventID: id + "-q" });
-    if (window.gtag && GOOGLE_ADS_QUALIFIED_LABEL) {
-      gtag("event", "conversion", { send_to: GOOGLE_ADS_ID + "/" + GOOGLE_ADS_QUALIFIED_LABEL, transaction_id: id + "-q" });
-    }
-    window.dataLayer.push({ event: "qualified_lead", ...details });
+    window.dataLayer.push({ event: "qualified_lead", lead_id: id, ...details });
+  },
+  questionsComplete(id, quality, answers) {
+    window.dataLayer.push({ event: "lead_questions_complete", lead_id: id, lead_quality: quality, ...answers });
   },
 };

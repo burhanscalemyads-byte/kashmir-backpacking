@@ -47,7 +47,7 @@ const CALL_TIMES = {
 
   // One conversion per enquiry, however often the page is reloaded
   if (!lead.tracked) {
-    track.lead(lead.id);
+    track.lead(lead);
     lead.tracked = true;
     saveLead(lead);
   }
@@ -92,6 +92,10 @@ const CALL_TIMES = {
     if (lead.quality === "Hot" && !lead.qualifiedTracked) {
       track.qualified(lead.id, { budget_fit: lead.answers.budget_fit, booking_timeline: lead.answers.booking_timeline });
       lead.qualifiedTracked = true;
+    }
+    if (!lead.completeTracked && steps.every((s) => lead.answers[s.dataset.key])) {
+      track.questionsComplete(lead.id, lead.quality, lead.answers);
+      lead.completeTracked = true;
     }
     lead.step = current + 1;
     saveLead(lead);

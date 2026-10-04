@@ -233,8 +233,6 @@ document.querySelectorAll(".lead-form").forEach((form) => {
     try {
       await postToSheet(payload);
       saveLead({ id: payload.lead_id, firstName: payload.name.split(" ")[0], phoneDigits: payload.phone.slice(3) });
-      window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push({ event: "lead_submit", form_location: payload.form_location });
       location.href = THANK_YOU_URL;
     } catch (err) {
       console.error(err);
