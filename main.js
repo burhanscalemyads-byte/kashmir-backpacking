@@ -231,7 +231,7 @@ document.querySelectorAll(".lead-form").forEach((form) => {
     };
 
     try {
-      await postToSheet(payload);
+      await Promise.all([postToSheet(payload), postLeadToCRM(payload)]);
       saveLead({ id: payload.lead_id, firstName: payload.name.split(" ")[0], phoneDigits: payload.phone.slice(3) });
       location.href = THANK_YOU_URL;
     } catch (err) {

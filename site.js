@@ -11,6 +11,10 @@ const FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbwYnAfwqPfea57MW3
 // Extra fields some services need, e.g. { access_key: "..." } for Web3Forms.
 const FORM_EXTRA_FIELDS = {};
 const THANK_YOU_URL = "thank-you.html";
+// Glabol CRM: every lead is also posted here. Its CORS accepts *.glabol.com pages only.
+const CRM_WEBHOOK_URL = "https://crm.glabol.com/api/webhooks/leads/intake?secret=xq6z371n9a";
+const CRM_API_KEY = "xq6z371n9a";
+const DESTINATION = "Kashmir";   // change per destination page
 
 // ---------------------------------------------------------------------------
 
@@ -45,6 +49,40 @@ async function postToSheet(payload) {
   }
   const res = await fetch(FORM_ENDPOINT, { method: "POST", body, headers: { Accept: "application/json" }, keepalive: true });
   if (!res.ok) throw new Error("Lead endpoint returned " + res.status);
+}
+
+function crmSource(lead) {
+  const source = (lead.source || "").toLowerCase(), medium = (lead.medium || "").toLowerCase();
+  if (lead.gclid || lead.gbraid || lead.wbraid || (source === "google" && /cpc|ppc|paid/.test(medium))) return "Google Ads";
+  if (/facebook|instagram|meta|^fb$|^ig$/.test(source)) return "Meta Ads";
+  return "Website";
+}
+
+// Never throws and never takes longer than 5s, so the CRM can't hold up or lose a lead.
+async function postLeadToCRM(lead) {
+  if (!CRM_WEBHOOK_URL) return;
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 5000);
+  try {
+    await fetch(CRM_WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-api-key": CRM_API_KEY },
+      body: JSON.stringify({
+        name: lead.name,
+        phone: lead.phone,
+        email: "",
+        destination: DESTINATION,
+        message: `Interested in ${DESTINATION} package. Travel month: ${lead.month}. Travellers: ${lead.group_size}.`,
+        host: window.location.hostname,
+        source: crmSource(lead),
+      }),
+      signal: ctrl.signal,
+    });
+  } catch (err) {
+    console.error("[Glabol] CRM post failed:", err);
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 /* ---------- Ad tracking: all tags (Google Ads, GA4, Meta Pixel) live in GTM; the page only pushes events (README: Ad tracking) ---------- */

@@ -24,7 +24,7 @@
 
 const EMAIL_ALERTS = true;       // email the sheet owner about every new lead
 const EXTRA_ALERT_EMAILS = "";   // more people to alert, comma-separated, e.g. "sales@glabol.com"
-const CRM_WEBHOOK_URL = "";      // later: your CRM / Zapier / Make webhook; each lead is also sent there
+const CRM_WEBHOOK_URL = "";      // keep empty: the landing page posts each lead to the Glabol CRM itself
 const SHEET_NAME = "Leads";
 const TIME_ZONE = "Asia/Kolkata";
 const TIMESTAMP_FORMAT = "dd mmm yyyy, h:mm am/pm";

@@ -104,9 +104,26 @@ Every enquiry becomes a row in the sheet straight away, and the sheet owner gets
   - The script only accepts a name plus a valid Indian mobile number.
   - Answers are only accepted with the exact button values, and they never change the name or phone.
 - **Email alerts:** sent the moment the enquiry arrives, before the questions, so nobody waits for a call. A free Gmail account can send about 100 a day. Leads are still saved after that.
-- **CRM later:** set `CRM_WEBHOOK_URL` in the script and every lead is also forwarded there. The website doesn't need to change.
+- **Glabol CRM:** the page posts every lead to the CRM itself, alongside the Sheet; see "Leads to the Glabol CRM" below. Keep the script's own `CRM_WEBHOOK_URL` empty, or each lead would arrive in the CRM twice.
 
 While `FORM_ENDPOINT` is empty, submitting logs the lead to the browser console and still goes to the thank-you page, so you can test the flow. Other services also work in `FORM_ENDPOINT`, for example Formspree, or Web3Forms with `FORM_EXTRA_FIELDS = { access_key: "YOUR_KEY" }`. Those services save the first form only, not the answers.
+
+**Leads to the Glabol CRM.** On submit, the page sends each lead to the Sheet and to `crm.glabol.com` at the same time. The CRM settings are in `site.js`: `CRM_WEBHOOK_URL`, `CRM_API_KEY` and `DESTINATION` (set `DESTINATION` per destination page). The page sends JSON with an `x-api-key` header:
+
+| Field | Value |
+|---|---|
+| `name`, `phone` | from the form; phone as +91XXXXXXXXXX |
+| `email` | empty (the form has no email field) |
+| `destination` | `DESTINATION`, e.g. "Kashmir" |
+| `message` | "Interested in Kashmir package. Travel month: Nov 2026. Travellers: 2." |
+| `host` | the page's domain, e.g. kashmir.glabol.com |
+| `source` | "Google Ads" for Google ad clicks (gclid, or google / cpc), "Meta Ads" for Facebook or Instagram, "Website" for everything else |
+
+Things to know:
+- The CRM accepts requests only from `*.glabol.com` pages, so leads from a local test copy don't reach it.
+- If the CRM is down or slow, the visitor still reaches the thank-you page (the page waits at most 5 seconds) and the lead is still in the Sheet. A failure is logged in the browser console only.
+- The key is visible in the page source, like any browser-side webhook; the CRM should treat this endpoint as public.
+- The thank-you answers go to the Sheet only, not to the CRM.
 
 **Qualifying questions (thank-you page).** One question per screen, tap to answer, with Back and "Skip, just call me". Skipping loses nothing, because the lead is already saved.
 
