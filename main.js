@@ -267,8 +267,8 @@ document.querySelectorAll(".lead-form").forEach((form) => {
 
   const defs = el("defs", {});
   const grad = el("linearGradient", { id: "profile-fill", x1: 0, y1: 0, x2: 0, y2: 1 }, defs);
-  el("stop", { offset: "0", "stop-color": "#C6E14B", "stop-opacity": ".45" }, grad);
-  el("stop", { offset: "1", "stop-color": "#C6E14B", "stop-opacity": "0" }, grad);
+  el("stop", { offset: "0", class: "p-fill-top" }, grad);
+  el("stop", { offset: "1", class: "p-fill-bottom" }, grad);
 
   for (let alt = 1000; alt < MAX; alt += 1000) {
     el("line", { class: "p-grid", x1: 0, x2: W, y1: y(alt), y2: y(alt) });

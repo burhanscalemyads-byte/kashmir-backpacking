@@ -1,0 +1,20 @@
+{
+  "name": "Vietnam B \u00b7 Hoi An lantern",
+  "id": "vietnam-b",
+  "roles": {
+    "ground": "#F0E2C0",
+    "ground-soft": "#F8F0DD",
+    "ink": "#2B1510",
+    "text": "#5E4335",
+    "line": "#E6D6B5",
+    "accent": "#C8331E",
+    "on-accent": "#FFFFFF",
+    "alert": "#8E1B12",
+    "alert-soft": "#F6DCD3"
+  },
+  "sky": [
+    "#6E7FA6",
+    "#C9A2A0",
+    "#F1D6B8"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "Vietnam C \u00b7 Rice terrace",
+  "id": "vietnam-c",
+  "roles": {
+    "ground": "#E4EBC3",
+    "ground-soft": "#F3F6E3",
+    "ink": "#17301A",
+    "text": "#4A5C3E",
+    "line": "#DCE3BD",
+    "accent": "#F2C230",
+    "on-accent": "#17301A",
+    "alert": "#9A2B16",
+    "alert-soft": "#F5DED5"
+  },
+  "sky": [
+    "#6F9CB8",
+    "#A9C9D6",
+    "#E1ECE6"
+  ]
+}

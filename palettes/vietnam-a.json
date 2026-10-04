@@ -1,0 +1,20 @@
+{
+  "name": "Vietnam A \u00b7 Ha Long jade",
+  "id": "vietnam-a",
+  "roles": {
+    "ground": "#D6E4DE",
+    "ground-soft": "#EDF4F1",
+    "ink": "#0D2B2D",
+    "text": "#3F5C59",
+    "line": "#D0DED8",
+    "accent": "#F4B12E",
+    "on-accent": "#0D2B2D",
+    "alert": "#A12A1C",
+    "alert-soft": "#F6DED8"
+  },
+  "sky": [
+    "#5B8FA3",
+    "#93BCC6",
+    "#D7E7E6"
+  ]
+}

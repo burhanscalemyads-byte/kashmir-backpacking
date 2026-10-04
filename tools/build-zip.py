@@ -11,7 +11,7 @@ import re
 import zipfile
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-ASSETS = ["styles.css", "site.js", "main.js", "thank-you.js"]
+ASSETS = ["palette.css", "styles.css", "site.js", "main.js", "thank-you.js"]
 PAGES = ["index.html", "thank-you.html"]
 
 versions = {name: hashlib.sha1((ROOT / name).read_bytes()).hexdigest()[:8] for name in ASSETS}

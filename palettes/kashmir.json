@@ -1,0 +1,28 @@
+{
+  "name": "Kashmir",
+  "id": "kashmir",
+  "roles": {
+    "ground": "#DFE3CC",
+    "ground-soft": "#F1F3EA",
+    "ink": "#14251C",
+    "text": "#4E5B49",
+    "line": "#DDE2D3",
+    "accent": "#C6E14B",
+    "on-accent": "#14251C",
+    "alert": "#8C2A1A",
+    "alert-soft": "#F3DED7"
+  },
+  "sky": ["#5E8BB0", "#8DB2CE", "#D3E1E8"],
+  "overrides": {
+    "scrim": "#0C1C14",
+    "glass": "#0E2018",
+    "shadow": "#081810",
+    "caption": "#08140E",
+    "glow": "#0A1E14",
+    "field-line": "#C9D0BC",
+    "chart-label": "#8A9585",
+    "placeholder": ["#B4C3A4", "#7D9580", "#5D7766"],
+    "ridges": ["#B9CAD6", "#8FA6B6", "#5C7A68", "#36513F"]
+  },
+  "exempt": ["field-line", "chart-label"]
+}

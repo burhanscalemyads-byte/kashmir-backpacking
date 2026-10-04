@@ -5,8 +5,9 @@ A static landing page for Google and Meta ads lead capture. There's no build ste
 ```
 index.html       the landing page
 thank-you.html   shown after an enquiry: 3 qualifying questions, then "your trip is on its way"
-styles.css       all styling; colours are the variables at the top
-site.js          settings (sheet URL, phone, Meta Pixel / Google Ads IDs), sending, ad tracking
+styles.css       all styling, shared by every destination; it holds no destination colours
+palette.css      this destination's colours, generated from palettes/kashmir.json (don't edit by hand)
+site.js          settings (sheet URL, Meta Pixel / Google Ads IDs), sending, ad tracking
 main.js          landing page: form, ad attribution, keyword headlines, altitude chart
 thank-you.js     the qualifying questions and the Hot / Warm / Cold rule
 images/          your photos
@@ -37,6 +38,30 @@ The brochure's batch dates are the Delhi dates. Jammu and Srinagar travellers ar
 **No phone numbers on the page, by choice.** Every enquiry goes through the form, so each lead is tracked and lands in the sheet. That's why there are no call or WhatsApp buttons either.
 
 **Still placeholders:** the three reviews and their names. Replace them with real ones; ad policies require them to be true before you run ads.
+
+## Colours (palettes)
+
+Each destination has its own palette: nine colours in `palettes/<destination>.json`.
+
+| Role | Used for |
+| --- | --- |
+| `ground` | the page background |
+| `ground-soft` | soft fills |
+| `ink` | headings, prices and the dark panel |
+| `text` | body copy |
+| `line` | hairlines |
+| `accent` | buttons, ticks and chart dots |
+| `on-accent` | text on the accent |
+| `alert` and `alert-soft` | errors and the "Next batch" pill |
+
+There are also three `sky` colours, used only when the hero photo is missing. Photo shading, shadows, field borders and icons are worked out from these colours.
+
+```bash
+python3 tools/palette.py palettes/kashmir.json          # check contrast, write palette.css, set the browser theme colour
+python3 tools/palette.py palettes/vietnam-a.json --check  # only check a draft palette
+```
+
+The script refuses to write `palette.css` if text would be too faint to read. Kashmir keeps two known pale spots, the field borders and the chart labels, as warnings so its look doesn't change. For a new destination, copy the Kashmir site, write its palette file, run the script, then build the zip as usual.
 
 ## 2. Photos
 
