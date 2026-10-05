@@ -174,7 +174,7 @@ utm_source=facebook&utm_medium=paid_social&campaign_id={{campaign.id}}&adset_id=
 | Event | When | Data | GTM tags on it (container v17) |
 |---|---|---|---|
 | `lead_form_submit` | once per enquiry, as the thank-you page opens | `lead_id`; `user_data.phone_number` (+91…, read by the "User Provided Data" variable) | GAds user-provided data, GA4 `generate_lead`, Meta `Lead` |
-| `thank_you_page_view` | straight after it | `lead_id`, `transaction_id` (= lead ID) | GAds conversion (label HilcCIXQsJIcEMG9heQC) |
+| `thank_you_page_view` | straight after it | `lead_id`, `transaction_id` (= lead ID) | Google Ads conversion |
 | `qualified_lead` | once, when the answers make the lead **Hot** (budget OK, booking within a month) | `lead_id`, `budget_fit`, `booking_timeline` | none yet |
 | `lead_questions_complete` | once, when all three questions are answered | `lead_id`, `lead_quality` (Hot/Warm/Cold), `budget_fit`, `booking_timeline`, `call_time` | none yet |
 
